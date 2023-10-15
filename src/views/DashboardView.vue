@@ -8,7 +8,7 @@
             <v-list-item link title="Configuration"></v-list-item>
             <v-list-item link title="Log out"></v-list-item>
         </v-navigation-drawer>
-            <!-- Navbar -->
+        <!-- Navbar -->
         <v-app-bar color="blue-lighten-4" prominent>
             <v-text-field label="Search books" class="mt-5 ml-4"></v-text-field>
             <v-spacer></v-spacer>
