@@ -18,7 +18,7 @@
 </template>
 <script>
 export default {
-    name: 'DashboardView'
+    name: 'DashboardHomeView'
 }
 </script>
 <style scoped>

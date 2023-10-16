@@ -1,15 +1,27 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import DashboardView from '../views/DashboardView.vue'
+import DashboardHomeView from '../views/DashboardHomeView.vue'
+import DashboardProfileView from '../views/DashboardProfileView.vue'
+import DashboardConfigView from '../views/DashboardConfigView.vue'
 
 const routes = [
   {
-    path: '/dashboard',
-    name: 'dashboard',
-    component: DashboardView
-  },
-  {
     path: '/',
     redirect: '/dashboard',
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: DashboardHomeView,
+  },
+  {
+    path: '/dashboard/profile',
+    name: 'profile',
+    component: DashboardProfileView
+  },
+  {
+    path: '/dashboard/configuration',
+    name: 'configuration',
+    component: DashboardConfigView
   }
 ]
 
