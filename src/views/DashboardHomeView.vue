@@ -59,6 +59,10 @@
                         </v-col>
                     </v-row>
                 </v-grid>
+                <div>
+                    <v-btn icon="mdi-plus" size="x-large" class="bg-info" to="/dashboard/create"></v-btn>
+                </div>
+                
             </v-container>
         </v-main>
     </v-app>
