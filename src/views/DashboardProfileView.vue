@@ -10,7 +10,12 @@
 </template>
 <script>
 export default {
-    name: 'DashboardProfileView'
+    name: 'DashboardProfileView',
+    data(){
+        return{
+            
+        }
+    }
 }
 </script>
 <style scoped>

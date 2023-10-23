@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import DashboardHomeView from '../views/DashboardHomeView.vue'
 import DashboardProfileView from '../views/DashboardProfileView.vue'
 import DashboardConfigView from '../views/DashboardConfigView.vue'
+import DashboardSearchView from '../views/DashboardSearchView.vue'
+import DashboardCreateView from '../views/DashboardCreateView.vue'
 
 const routes = [
   {
@@ -22,7 +24,17 @@ const routes = [
     path: '/dashboard/configuration',
     name: 'configuration',
     component: DashboardConfigView
-  }
+  },
+  {
+    path: '/dashboard/search',
+    name: 'search',
+    component: DashboardSearchView
+  },
+  {
+    path: '/dashboard/create',
+    name: 'create',
+    component: DashboardCreateView
+  },
 ]
 
 const router = createRouter({
