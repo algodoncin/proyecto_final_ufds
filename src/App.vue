@@ -6,6 +6,7 @@
           <v-divider></v-divider>
           <v-list-item link title="Home" to="/"></v-list-item>
           <v-list-item link title="Profile" to="/dashboard/profile"></v-list-item>
+          <v-list-item link title="Search" to="/dashboard/search"></v-list-item>
           <v-list-item link title="Configuration" to="/dashboard/configuration"></v-list-item>
       <v-list-item link title="Log out"></v-list-item>
     </v-navigation-drawer>
