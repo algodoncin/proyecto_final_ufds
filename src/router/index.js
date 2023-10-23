@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import MainDashboardView from '../views/MainDashboardView.vue'
 import DashboardHomeView from '../views/DashboardHomeView.vue'
 import DashboardProfileView from '../views/DashboardProfileView.vue'
 import DashboardConfigView from '../views/DashboardConfigView.vue'
@@ -13,28 +14,35 @@ const routes = [
   {
     path: '/dashboard',
     name: 'dashboard',
-    component: DashboardHomeView,
-  },
-  {
-    path: '/dashboard/profile',
-    name: 'profile',
-    component: DashboardProfileView
-  },
-  {
-    path: '/dashboard/configuration',
-    name: 'configuration',
-    component: DashboardConfigView
-  },
-  {
-    path: '/dashboard/search',
-    name: 'search',
-    component: DashboardSearchView
-  },
-  {
-    path: '/dashboard/create',
-    name: 'create',
-    component: DashboardCreateView
-  },
+    component: MainDashboardView,
+    children: [
+      {
+        path: '/home',
+        name: 'home',
+        component: DashboardHomeView
+      },
+      {
+        path: '/profile',
+        name: 'profile',
+        component: DashboardProfileView
+      },
+      {
+        path: '/configuration',
+        name: 'configuration',
+        component: DashboardConfigView
+      },
+      {
+        path: '/search',
+        name: 'search',
+        component: DashboardSearchView
+      },
+      {
+        path: '/create',
+        name: 'create',
+        component: DashboardCreateView
+      },
+    ]
+  }
 ]
 
 const router = createRouter({
