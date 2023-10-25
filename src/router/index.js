@@ -5,6 +5,7 @@ import DashboardProfileView from '../views/DashboardProfileView.vue'
 import DashboardConfigView from '../views/DashboardConfigView.vue'
 import DashboardSearchView from '../views/DashboardSearchView.vue'
 import DashboardCreateView from '../views/DashboardCreateView.vue'
+import DashboardLoginView from '../views/DashboardLoginView.vue'
 
 const routes = [
   {
@@ -41,6 +42,11 @@ const routes = [
         name: 'create',
         component: DashboardCreateView
       },
+      {
+        path: '/login',
+        name: 'login',
+        component: DashboardLoginView
+      }
     ]
   }
 ]
