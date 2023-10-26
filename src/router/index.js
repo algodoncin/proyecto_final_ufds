@@ -17,27 +17,27 @@ const routes = [
     component: MainDashboardView,
     children: [
       {
-        path: '/home',
+        path: '/dashboard/home',
         name: 'home',
         component: DashboardHomeView
       },
       {
-        path: '/profile',
+        path: '/dashboard/profile',
         name: 'profile',
         component: DashboardProfileView
       },
       {
-        path: '/configuration',
+        path: '/dashboard/configuration',
         name: 'configuration',
         component: DashboardConfigView
       },
       {
-        path: '/search',
+        path: '/dashboard/search',
         name: 'search',
         component: DashboardSearchView
       },
       {
-        path: '/create',
+        path: '/dashboard/create',
         name: 'create',
         component: DashboardCreateView
       },
