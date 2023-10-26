@@ -60,7 +60,7 @@
                     </v-row>
                 </v-grid>
                 <div>
-                    <v-btn icon="mdi-plus" size="x-large" class="bg-info" to="/create"></v-btn>
+                    <v-btn icon="mdi-plus" size="x-large" class="bg-info" to="/dashboard/create"></v-btn>
                 </div>
                 
             </v-container>
