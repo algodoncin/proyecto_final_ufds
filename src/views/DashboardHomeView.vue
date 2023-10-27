@@ -73,5 +73,11 @@ export default {
 }
 </script>
 <style scoped>
-
+.bg-info{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    border-radius: 50%;
+    margin: 10px;
+}
 </style>
