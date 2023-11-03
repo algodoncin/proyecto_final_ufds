@@ -2,7 +2,7 @@
     <v-app>
         <!-- Sidebar -->
         <v-navigation-drawer permanent color="blue-lighten-4" v-if="conf">
-            <v-list-item title="My Application" subtitle="Vuetify" :height="64"></v-list-item>
+            <v-list-item title="My Application" subtitle="Vuetify" :height="64">{{ user.username }}</v-list-item>
             <v-divider></v-divider>
             <v-list-item link title="Home" to="/dashboard/home"></v-list-item>
             <v-list-item link title="Profile" to="/dashboard/profile"></v-list-item>
@@ -20,7 +20,12 @@ export default {
     name: 'MainDashboardView',
     data(){
         return{
-            conf: true
+            conf: true,
+            user: {
+                id: this.$store.state.user.id,
+                email: this.$store.state.user.email,
+                username: this.$store.state.user.username
+            }
         }
     },
     methods: {
