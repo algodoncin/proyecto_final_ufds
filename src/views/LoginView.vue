@@ -46,6 +46,14 @@
                     color="surface-variant"
                     variant="tonal"
                 >
+                    <div>
+                        <v-alert
+                            type="error"
+                            title="Incorrect credentials"
+                            text="Email or password are incorrect"
+                            v-if="credentialsErr"
+                        ></v-alert>
+                    </div>
                 </v-card>
                 <v-btn
                     block
@@ -58,6 +66,7 @@
                     Log In
                 </v-btn>
                 <v-card-text class="text-center">
+                    
                     <a
                     class="text-blue text-decoration-none"
                     href="/register"
@@ -72,6 +81,8 @@
     </v-app>
 </template>
 <script>
+import axios from "axios"
+
 export default {
     name: 'LoginView',
     data(){
@@ -81,11 +92,37 @@ export default {
                 password: ''
             },
             visible: false,
+            credentialsErr: false
         }
     },
     methods: {
         login(){
-            console.log(this.user.email, this.user.password);
+            // console.log(this.user);
+            axios.post('http://localhost:2046/api/user/login', this.user)
+            .then((res)=>{
+                // console.log(res);
+                // console.log(res.status);
+                if(res.status == 200){
+                    let resUser = res.data.user
+                    let resToken = res.data.token;
+                    
+                    this.$store.dispatch('addLoggedUserAction', resUser);
+                    this.$store.dispatch('addUserTokenAction', resToken)
+
+                    console.log(this.$store.state.user);
+                    console.log(this.$store.state.token);
+
+                    this.credentialsErr = false;
+                    this.$router.push('/dashboard')
+                }
+            })
+            .catch((err)=>{
+                console.log(err);
+                console.log(`An error ocurred ${err}`);
+                if(err.response.status == 409){
+                    this.credentialsErr = true;
+                }
+            })
         }
     }
 }

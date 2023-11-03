@@ -17,7 +17,7 @@
                         placeholder="Username"
                         prepend-inner-icon="mdi-account-outline"
                         variant="outlined"
-                        v-model="user.username"
+                        v-model="registerUser.username"
                     ></v-text-field>
                     <div class="text-subtitle-1 text-medium-emphasis">Email</div>
                     <v-text-field
@@ -25,7 +25,7 @@
                         placeholder="Email address"
                         prepend-inner-icon="mdi-email-outline"
                         variant="outlined"
-                        v-model="user.email"
+                        v-model="registerUser.email"
                     ></v-text-field>
                     <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
                         Password
@@ -38,7 +38,7 @@
                         prepend-inner-icon="mdi-lock-outline"
                         variant="outlined"
                         @click:append-inner="visible = !visible"
-                        v-model="user.password"
+                        v-model="registerUser.password"
                     ></v-text-field>
                     <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
                         Confirm password
@@ -51,7 +51,7 @@
                         prepend-inner-icon="mdi-lock-outline"
                         variant="outlined"
                         @click:append-inner="visible1 = !visible1"
-                        v-model="user.passwordVerification"
+                        v-model="passwordVerification"
                     ></v-text-field>
                     <v-alert
                         type="error"
@@ -59,6 +59,28 @@
                         text="The passwords have to match."
                         v-if="passwordMatch"
                     ></v-alert>
+                    <v-alert
+                        type="error"
+                        title="Existing user"
+                        text="There is already a user with any those credentials"
+                        v-if="existingCredentials"
+                    ></v-alert>
+                    <v-alert
+                        type="error"
+                        title="Missing data"
+                        text="You must fill all the fields to register"
+                        v-if="missingData"
+                    ></v-alert>
+                    <v-dialog
+                    v-model="registerConfirmation">
+                        <v-alert
+                            type="success"
+                            title="User registered"
+                            text="You have been registered, you will be redirected to the login page in a few seconds"
+                            v-if="registerConfirmation"
+                        ></v-alert>
+                    </v-dialog>
+                    
                     <v-card
                         class="mb-12"
                         color="surface-variant"
@@ -75,36 +97,73 @@
                     >
                         Sign up 
                     </v-btn>
+                    <v-card-text class="text-center">
+                    <a
+                    class="text-green text-decoration-none"
+                    href="/login"
+                    rel="noopener noreferrer"
+                    >
+                    <v-icon icon="mdi-chevron-left"></v-icon>Go back to login
+                    </a>
+                </v-card-text>
                 </v-card>
             </form>
         </v-container>
     </v-app>
 </template>
 <script>
+import axios from "axios"
+
 export default {
     name: 'LoginView',
     data(){
         return{
-            user: {
+            registerUser: {
                 username: '',
                 email: '',
                 password: '',
-                passwordVerification: ''
             },
+            passwordVerification: '',
             passwordMatch: false,
             visible: false,
             visible1: false,
+            existingCredentials: false,
+            registerConfirmation: false,
+            missingData: false
         }
     },
     methods: {
         register(){
-            const password1 = this.user.password;
-            const password2 = this.user.passwordVerification;
+            const password1 = this.registerUser.password;
+            const password2 = this.passwordVerification;
+
 
             if(password1 == password2){
-                console.log(this.user.username, this.user.email, this.user.password);
-                this.user = {};
+                console.log(this.registerUser);
+                axios.post('http://localhost:2046/api/user/register', this.registerUser)
+                .then((res)=>{
+                    console.log(res);
+                    this.registerConfirmation = true;
+                    this.registerUser = {};
+                    this.passwordVerification = ''; 
+                    this.existingCredentials = false;
+                    this.missingData = false;
+                    setTimeout(()=>{
+                        this.registerConfirmation = false;
+                        this.$router.push('/login')
+                    }, 4000);
+                })
+                .catch((err)=>{
+                    if(err.response.status == 409){
+                        this.missingData = false;
+                        this.existingCredentials = true;
+                    }else if(err.response.status == 412){
+                        this.missingData = true;
+                    }
+                })
+                
                 this.passwordMatch = false;
+                
             }else{
                 this.passwordMatch = true
             }

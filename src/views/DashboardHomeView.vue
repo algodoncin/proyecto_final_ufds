@@ -21,18 +21,28 @@
                     </v-row>
                 </v-grid>
                 <div>
-                    <v-btn icon="mdi-plus" size="x-large" class="bg-info " to="/dashboard/create" vertical="bottom" horizontal="end"></v-btn>
+                    <v-btn icon="mdi-plus" size="x-large" class="bg-info add-button" to="/dashboard/create" vertical="bottom" horizontal="end"></v-btn>
                 </div>
-                
             </v-container>
         </v-main>
     </v-app>
 </template>
 <script>
 export default {
-    name: 'DashboardHomeView'
+    name: 'DashboardHomeView',
+    data(){
+        return{
+            
+        }
+    },
 }
 </script>
 <style scoped>
-
+.add-button{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    border-radius: 50%;
+    margin: 10px;
+}
 </style>
