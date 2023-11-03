@@ -18,7 +18,6 @@
                         prepend-inner-icon="mdi-account-outline"
                         variant="outlined"
                         v-model="registerUser.username"
-                        :rules="rules"
                     ></v-text-field>
                     <div class="text-subtitle-1 text-medium-emphasis">Email</div>
                     <v-text-field
@@ -98,6 +97,15 @@
                     >
                         Sign up 
                     </v-btn>
+                    <v-card-text class="text-center">
+                    <a
+                    class="text-green text-decoration-none"
+                    href="/login"
+                    rel="noopener noreferrer"
+                    >
+                    <v-icon icon="mdi-chevron-left"></v-icon>Go back to login
+                    </a>
+                </v-card-text>
                 </v-card>
             </form>
         </v-container>

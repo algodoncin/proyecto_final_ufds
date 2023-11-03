@@ -29,7 +29,21 @@
 </template>
 <script>
 export default {
-    name: 'DashboardHomeView'
+    name: 'DashboardHomeView',
+    data(){
+        return{
+            user: {
+                id: this.$store.state.user.id,
+                email: this.$store.state.user.email,
+                username: this.$store.state.user.username
+            }
+        }
+    },
+    beforeCreate(){
+        if(!this.$store.state.token){
+            this.$router.push('/login')
+        }
+    }
 }
 </script>
 <style scoped>
