@@ -23,6 +23,10 @@ export default createStore({
     },
     addUserToken(state, token){
       state.token = token
+    },
+    logout(state){
+      state.user = {};
+      state.token = {}
     }
   },
   actions: {
@@ -31,6 +35,9 @@ export default createStore({
     },
     addUserTokenAction(context, token){
       context.commit('addUserToken', token)
+    },
+    logoutAction(context){
+      context.commit('logout')
     }
   },
   modules: {

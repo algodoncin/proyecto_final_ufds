@@ -8,7 +8,7 @@
             <v-list-item link title="Profile" to="/dashboard/profile"></v-list-item>
             <v-list-item link title="Search" to="/dashboard/search"></v-list-item>
             <v-list-item link title="Configuration" to="/dashboard/configuration"></v-list-item>
-            <v-list-item link title="Log out"></v-list-item>
+            <v-list-item link title="Log out" @click="logout()"></v-list-item>
         </v-navigation-drawer>
         <v-main>
             <router-view/>
@@ -21,6 +21,17 @@ export default {
     data(){
         return{
             conf: true
+        }
+    },
+    methods: {
+        logout(){
+            this.$store.dispatch('logoutAction');
+            this.$router.push('/login')
+        }
+    },
+    beforeCreate(){
+        if(!this.$store.state.token){
+            this.$router.push('/login')
         }
     }
 }
