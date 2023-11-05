@@ -26,18 +26,21 @@ export default createStore({
     },
     logout(state){
       state.user = {};
-      state.token = {}
+      state.token = {};
     }
   },
   actions: {
-    addLoggedUserAction(context, user){
-      context.commit('addLoggedUser', user)
-    },
-    addUserTokenAction(context, token){
-      context.commit('addUserToken', token)
+    loginAction(context, data){
+      context.commit('addUserToken', data.token)
+      context.commit('addLoggedUser', data.user)
+
+      // Guardar datos en el local storage
+      localStorage.setItem('userData', JSON.stringify(data))
     },
     logoutAction(context){
-      context.commit('logout')
+      context.commit('logout');
+
+      localStorage.clear();
     }
   },
   modules: {

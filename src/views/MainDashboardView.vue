@@ -34,10 +34,5 @@ export default {
             this.$router.push('/login')
         }
     },
-    beforeCreate(){
-        if(!this.$store.state.token){
-            this.$router.push('/login')
-        }
-    }
 }
 </script>
