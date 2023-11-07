@@ -4,12 +4,12 @@
             <!-- Content --> 
             <v-container>
                     <v-row class="mt-3">
-                        <v-col cols="3">
+                        <v-col cols="3" v-for="(notebook, i) in notebooks" :key="i">
                             <v-card >
-                                <v-card-title>NombreCuaderno</v-card-title>
-                                <v-card-subtitle>NombreAutor</v-card-subtitle>
+                                <v-card-title>{{notebook.title}}</v-card-title>
+                                <v-card-subtitle>Autor: {{notebook.user.username}}</v-card-subtitle>
                                 <v-card-text>
-                                    Test text
+                                    {{notebook.description}}
                                 </v-card-text>
                                 <v-card-actions>
                                     <v-btn>Read</v-btn>
@@ -26,24 +26,40 @@
     </v-app>
 </template>
 <script>
+import axios from 'axios';
+
 export default {
     name: 'DashboardHomeView',
     data(){
         return{
-            user: {
-                id: this.$store.state.user.id,
-                email: this.$store.state.user.email,
-                username: this.$store.state.user.username
-            }
+            currentId: this.$store.state.user.id,
+            currentToken: this.$store.state.token,
+            notebooks: []
         }
     },
     methods: {
         showUserBooks(userId){
             console.log(userId);
+            axios.get(`http://localhost:2046/api/notebook/user/${userId}`, {
+                headers: {
+                    Authorization: this.currentToken
+                }
+            })
+            .then((respuesta)=>{
+                if(respuesta.status == 200){
+                    let res = respuesta.data;
+                    this.notebooks = res.notebooks;
+                    console.log(res);
+                    console.log(this.notebooks);
+                }
+            })
+            .catch((err)=>{
+                console.log(`Ocurrio un error ${err}`);
+            })
         }
     },
     created(){
-        this.showUserBooks(this.user.id);
+        this.showUserBooks(this.currentId);
     }
 }
 </script>
