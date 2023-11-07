@@ -30,9 +30,21 @@ export default {
     name: 'DashboardHomeView',
     data(){
         return{
-            
+            user: {
+                id: this.$store.state.user.id,
+                email: this.$store.state.user.email,
+                username: this.$store.state.user.username
+            }
         }
     },
+    methods: {
+        showUserBooks(userId){
+            console.log(userId);
+        }
+    },
+    created(){
+        this.showUserBooks(this.user.id);
+    }
 }
 </script>
 <style scoped>

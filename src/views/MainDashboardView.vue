@@ -22,9 +22,9 @@ export default {
         return{
             conf: true,
             user: {
-                id: this.$store.state.user.id,
-                email: this.$store.state.user.email,
-                username: this.$store.state.user.username
+                id: '',
+                email: '',
+                username: ''
             }
         }
     },
@@ -36,7 +36,9 @@ export default {
         validateAccess(){
             let data = localStorage.getItem('userData')
             if(data){
-                this.$store.dispatch('loginAction', JSON.parse(data))
+                this.$store.dispatch('loginAction', JSON.parse(data));
+                let localStoredUser = JSON.parse(data);
+                this.user = localStoredUser.user;
                 this.$router.push('/dashboard')
             } else {
                 this.$router.push('/')
