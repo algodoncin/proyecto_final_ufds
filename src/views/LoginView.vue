@@ -105,9 +105,14 @@ export default {
                 if(res.status == 200){
                     let resUser = res.data.user
                     let resToken = res.data.token;
-                    
-                    this.$store.dispatch('addLoggedUserAction', resUser);
-                    this.$store.dispatch('addUserTokenAction', resToken)
+                    let data = {
+                        user: resUser,
+                        token: resToken
+                    }
+                    // this.$store.dispatch('addLoggedUserAction', resUser);
+                    // this.$store.dispatch('addUserTokenAction', resToken);
+
+                    this.$store.dispatch('loginAction', data)
 
                     console.log(this.$store.state.user);
                     console.log(this.$store.state.token);
@@ -120,6 +125,8 @@ export default {
                 console.log(err);
                 console.log(`An error ocurred ${err}`);
                 if(err.response.status == 409){
+                    this.credentialsErr = true;
+                }else if(err.response.status == 404){
                     this.credentialsErr = true;
                 }
             })

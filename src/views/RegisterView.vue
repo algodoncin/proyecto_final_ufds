@@ -18,6 +18,8 @@
                         prepend-inner-icon="mdi-account-outline"
                         variant="outlined"
                         v-model="registerUser.username"
+                        min="3"
+                        counter
                     ></v-text-field>
                     <div class="text-subtitle-1 text-medium-emphasis">Email</div>
                     <v-text-field
@@ -26,6 +28,7 @@
                         prepend-inner-icon="mdi-email-outline"
                         variant="outlined"
                         v-model="registerUser.email"
+                        autocomplete="email"
                     ></v-text-field>
                     <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
                         Password
@@ -71,6 +74,12 @@
                         text="You must fill all the fields to register"
                         v-if="missingData"
                     ></v-alert>
+                    <v-alert
+                        type="error"
+                        title="Invalid Fields"
+                        text="Username field must contain at least 3 characters, email field must contain a valid email"
+                        v-if="invalidFields"
+                    ></v-alert>
                     <v-dialog
                     v-model="registerConfirmation">
                         <v-alert
@@ -80,7 +89,6 @@
                             v-if="registerConfirmation"
                         ></v-alert>
                     </v-dialog>
-                    
                     <v-card
                         class="mb-12"
                         color="surface-variant"
@@ -129,25 +137,25 @@ export default {
             visible1: false,
             existingCredentials: false,
             registerConfirmation: false,
-            missingData: false
+            missingData: false,
+            invalidFields: false
         }
     },
     methods: {
         register(){
             const password1 = this.registerUser.password;
             const password2 = this.passwordVerification;
-
-
+            
             if(password1 == password2){
-                console.log(this.registerUser);
                 axios.post('http://localhost:2046/api/user/register', this.registerUser)
                 .then((res)=>{
-                    console.log(res);
+                    console.log(res.status);
                     this.registerConfirmation = true;
                     this.registerUser = {};
                     this.passwordVerification = ''; 
                     this.existingCredentials = false;
                     this.missingData = false;
+                    this.invalidFields= false;
                     setTimeout(()=>{
                         this.registerConfirmation = false;
                         this.$router.push('/login')
@@ -155,10 +163,13 @@ export default {
                 })
                 .catch((err)=>{
                     if(err.response.status == 409){
+                        this.invalidFields= false;
                         this.missingData = false;
                         this.existingCredentials = true;
                     }else if(err.response.status == 412){
                         this.missingData = true;
+                    }else if(err.response.status == 400){
+                        this.invalidFields = true;
                     }
                 })
                 

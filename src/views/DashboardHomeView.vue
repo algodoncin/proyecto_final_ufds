@@ -3,7 +3,6 @@
         <v-main>
             <!-- Content --> 
             <v-container>
-                <v-grid >
                     <v-row class="mt-3">
                         <v-col cols="3">
                             <v-card >
@@ -19,7 +18,6 @@
                             </v-card>
                         </v-col>
                     </v-row>
-                </v-grid>
                 <div>
                     <v-btn icon="mdi-plus" size="x-large" class="bg-info add-button" to="/dashboard/create" vertical="bottom" horizontal="end"></v-btn>
                 </div>

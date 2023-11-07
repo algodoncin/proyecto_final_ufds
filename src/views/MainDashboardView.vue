@@ -32,12 +32,19 @@ export default {
         logout(){
             this.$store.dispatch('logoutAction');
             this.$router.push('/login')
+        },
+        validateAccess(){
+            let data = localStorage.getItem('userData')
+            if(data){
+                this.$store.dispatch('loginAction', JSON.parse(data))
+                this.$router.push('/dashboard')
+            } else {
+                this.$router.push('/')
+            }
         }
     },
-    beforeCreate(){
-        if(!this.$store.state.token){
-            this.$router.push('/login')
-        }
+    created(){
+        this.validateAccess();
     }
 }
 </script>
