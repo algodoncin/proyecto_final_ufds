@@ -15,21 +15,9 @@ export default {
     
   }),
   methods: {
-    validateAccess(){
-      let data = localStorage.getItem('userData')
-      if(data){
-        this.$store.dispatch('loginAction', JSON.parse(data))
-        this.$router.push('/dashboard')
-      } else {
-        this.$router.push('/')
-      }
-    }
+    
   },
   created(){
-    // if(!this.$store.state.token){
-    //   this.$router.push('/login')
-    // }
-    this.validateAccess();
   }
 }
 </script>
