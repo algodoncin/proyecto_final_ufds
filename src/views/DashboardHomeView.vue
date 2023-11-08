@@ -19,8 +19,46 @@
                         </v-col>
                     </v-row>
                 <div>
-                    <v-btn icon="mdi-plus" size="x-large" class="bg-info add-button" to="/dashboard/create" vertical="bottom" horizontal="end"></v-btn>
+                    <v-btn icon="mdi-plus" size="x-large" class="bg-info add-button" @click="openDialog()" vertical="bottom" horizontal="end"></v-btn>
                 </div>
+                <!-- Dialog to create notebook -->
+                <v-dialog
+                v-model="dialogOne"
+                transition="dialog-top-transition"
+                width="500">
+                    <v-card title="Notebook" subtitle="Create Notebook">
+                        <v-card-text>
+                            <v-text-field
+                            label="Title"
+                            maxlength="50"
+                            counter
+                            color="indigo"
+                            clearable
+                            placeholder="Notebook title"
+                            ></v-text-field>
+                            <v-text-field
+                            label="Description"
+                            maxlength="9"
+                            counter
+                            color="indigo"
+                            clearable
+                            placeholder="Notebook description"
+                            ></v-text-field>
+                            <v-select
+                            color="indigo"
+                            label="Visibility"
+                            :items="visibility"
+                            item-value="value"
+                            item-title="type"
+                            ></v-select>
+                            <v-btn
+                            prepend-icon="mdi-check"
+                            color="indigo"
+                            block
+                            >Guardar</v-btn>
+                        </v-card-text>
+                    </v-card>
+                </v-dialog>
             </v-container>
         </v-main>
     </v-app>
@@ -34,7 +72,27 @@ export default {
         return{
             currentId: this.$store.state.user.id,
             currentToken: this.$store.state.token,
-            notebooks: []
+            notebooks: [],
+            notebook: {
+                title: '',
+                description: '',
+                visibility: ''
+            },
+            dialogOne: false,
+            visibility: [
+                {
+                    type: "Private",
+                    value: 0
+                },
+                {
+                    type: "Followers only",
+                    value: 1
+                },
+                {
+                    type: "Public",
+                    value: 2
+                }
+            ]
         }
     },
     methods: {
@@ -56,6 +114,12 @@ export default {
             .catch((err)=>{
                 console.log(`Ocurrio un error ${err}`);
             })
+        },
+        openDialog(){
+            this.dialogOne = true;
+        },
+        createNotebook(){
+
         }
     },
     created(){
