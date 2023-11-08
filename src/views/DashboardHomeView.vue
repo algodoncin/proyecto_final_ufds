@@ -13,7 +13,7 @@
                                 </v-card-text>
                                 <v-card-actions>
                                     <v-btn>Read</v-btn>
-                                    <v-btn>Write</v-btn>
+                                    <v-btn @click="editNotebookViewRedirection(notebook._id)">Edit</v-btn>
                                 </v-card-actions>
                             </v-card>
                         </v-col>
@@ -163,6 +163,9 @@ export default {
                 })
                 
             }
+        },
+        editNotebookViewRedirection(notebookId){
+            this.$router.push(`/dashboard/edit/${notebookId}`)
         }
     },
     created(){
