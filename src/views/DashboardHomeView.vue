@@ -35,14 +35,18 @@
                             color="indigo"
                             clearable
                             placeholder="Notebook title"
+                            required
+                            v-model="notebook.title"
                             ></v-text-field>
                             <v-text-field
                             label="Description"
-                            maxlength="9"
+                            maxlength="100"
                             counter
                             color="indigo"
                             clearable
+                            required
                             placeholder="Notebook description"
+                            v-model="notebook.description"
                             ></v-text-field>
                             <v-select
                             color="indigo"
@@ -50,11 +54,28 @@
                             :items="visibility"
                             item-value="value"
                             item-title="type"
+                            required
+                            v-model="notebook.visibility"
                             ></v-select>
+                            <v-card
+                                class="mb-12"
+                                color="surface-variant"
+                                variant="tonal"
+                            >
+                                <div>
+                                    <v-alert
+                                        type="error"
+                                        title="Invalid title"
+                                        text="Notebook must have a title with 3 or more characters"
+                                        v-if="dialogFields"
+                                    ></v-alert>
+                                </div>
+                            </v-card>
                             <v-btn
                             prepend-icon="mdi-check"
                             color="indigo"
                             block
+                            @click="createNotebook(currentId, this.notebook)"
                             >Guardar</v-btn>
                         </v-card-text>
                     </v-card>
@@ -76,9 +97,8 @@ export default {
             notebook: {
                 title: '',
                 description: '',
-                visibility: ''
+                visibility: 2
             },
-            dialogOne: false,
             visibility: [
                 {
                     type: "Private",
@@ -92,7 +112,10 @@ export default {
                     type: "Public",
                     value: 2
                 }
-            ]
+            ],
+            // Booleans
+            dialogOne: false,
+            dialogFields: false
         }
     },
     methods: {
@@ -107,8 +130,6 @@ export default {
                 if(respuesta.status == 200){
                     let res = respuesta.data;
                     this.notebooks = res.notebooks;
-                    console.log(res);
-                    console.log(this.notebooks);
                 }
             })
             .catch((err)=>{
@@ -118,11 +139,36 @@ export default {
         openDialog(){
             this.dialogOne = true;
         },
-        createNotebook(){
+        createNotebook(userId, notebookToSave){
+            let title = notebookToSave.title;
 
+            if(title == '' || title.length < 3){
+                this.dialogFields = true;
+            }else{
+                axios.post("http://localhost:2046/api/notebook/save", notebookToSave, {
+                    headers: {
+                        Authorization: this.currentToken
+                    }
+                })
+                .then((respuesta)=>{
+                    this.dialogFields = false;
+                    // console.log(userId);
+                    // console.log(notebookToSave);
+                    console.log(respuesta);
+                    let createdNotebook = respuesta.data.response;
+                    this.$router.push(`/dashboard/edit/${createdNotebook._id}`)
+                })
+                .catch((err)=>{
+                    console.log(`Ocurrio un error ${err}`);
+                })
+                
+            }
         }
     },
     created(){
+        this.showUserBooks(this.currentId);
+    },
+    updated(){
         this.showUserBooks(this.currentId);
     }
 }

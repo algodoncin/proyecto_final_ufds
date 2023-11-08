@@ -10,6 +10,18 @@
 
 <script>
 export default {
-    name: 'DashboardCreateView'
+    name: 'DashboardCreateView',
+    data(){
+        return{
+
+        }
+    },
+    methods: {
+
+    },
+    created(){
+        console.log(this.$route.params);
+    }
 }
+
 </script>

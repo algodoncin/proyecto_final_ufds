@@ -51,7 +51,7 @@ const routes = [
         component: DashboardSearchView
       },
       {
-        path: '/dashboard/edit',
+        path: '/dashboard/edit/:id',
         name: 'edit',
         component: DashboardEditView
       },
