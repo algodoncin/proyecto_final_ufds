@@ -6,7 +6,7 @@ import DashboardHomeView from '../views/DashboardHomeView.vue'
 import DashboardProfileView from '../views/DashboardProfileView.vue'
 import DashboardConfigView from '../views/DashboardConfigView.vue'
 import DashboardSearchView from '../views/DashboardSearchView.vue'
-import DashboardCreateView from '../views/DashboardCreateView.vue'
+import DashboardEditView from '../views/DashboardEditView.vue'
 
 const routes = [
   {
@@ -51,9 +51,9 @@ const routes = [
         component: DashboardSearchView
       },
       {
-        path: '/dashboard/create',
-        name: 'create',
-        component: DashboardCreateView
+        path: '/dashboard/edit/:id',
+        name: 'edit',
+        component: DashboardEditView
       },
     ]
   }
