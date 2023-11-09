@@ -76,7 +76,7 @@
                             color="indigo"
                             block
                             @click="createNotebook(currentId, this.notebook)"
-                            >Guardar</v-btn>
+                            >Save</v-btn>
                         </v-card-text>
                     </v-card>
                 </v-dialog>

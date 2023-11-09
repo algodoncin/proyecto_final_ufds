@@ -81,17 +81,70 @@
                     ></v-alert>
                 </div>
             </v-card>
+            <v-dialog
+            v-model="deleteConfirmation"
+            transition="dialog-top-transition"
+            width="500"
+            persistent>
+                <v-card height="250">
+                    <v-card-text>
+                        <v-card
+                            class="mb-12"
+                            color="surface-variant"
+                            variant="tonal"
+                        >
+                            <div>
+                                <v-alert
+                                    type="error"
+                                    title="Are you sure to delete this notebook?"
+                                    text="Once you delete the notebook it cannot be restored, would you like to proceed?"
+                                ></v-alert>
+                            </div>
+                            
+                        </v-card>
+                        <v-row>
+                            <v-col>
+                                <v-btn
+                                prepend-icon="mdi-check"
+                                color="green"
+                                block
+                                >Proceed</v-btn>
+                            </v-col>
+                            <v-col>
+                                <v-btn
+                                prepend-icon="mdi-cancel"
+                                color="red"
+                                block
+                                @click="cancelDialog()"
+                                >Cancel</v-btn>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+            </v-dialog>
             <v-row class="mt-5">
                     <v-col cols="3" class="mx-auto">
                         <v-btn
                         block
                         class="mb-8"
-                        color="blue"
+                        color="green"
                         size="large"
                         variant="tonal"
                         @click="updateNotebook(this.currentNotebookId, this.notebook)"
                         >
                             Update
+                        </v-btn>
+                    </v-col>
+                    <v-col cols="3" class="mx-auto">
+                        <v-btn
+                        block
+                        class="mb-8"
+                        color="red"
+                        size="large"
+                        variant="tonal"
+                        @click="deleteDialog()"
+                        >
+                            Delete
                         </v-btn>
                     </v-col>
                 </v-row>
@@ -132,7 +185,9 @@ export default {
             markdown: '',
             // Dialogs
             dialogFieldsError: false,
-            dialogFieldsSuccess: false
+            dialogFieldsSuccess: false,
+            deleteConfirmation: false,
+            deleteMessage: false
         }
     },
     methods: {
@@ -146,7 +201,6 @@ export default {
                 if(respuesta.status == 200){
                     let res = respuesta.data.notebook;
 
-                    // title
                     this.notebook = res;    
                     this.markdown = this.notebook.content;
                     console.log(this.notebook);
@@ -181,9 +235,6 @@ export default {
                 notebookToUpdate.description = this.notebook.description;
                 notebookToUpdate.content = this.notebook.content;
                 notebookToUpdate.visibility = this.notebook.visibility;
-
-                console.log(notebookToUpdate);
-                console.log(notebook, notebookId);
                 // Update notebook
                 axios.put(`http://localhost:2046/api/notebook/update/${notebookId}`, notebook,{
                     headers: {
@@ -192,7 +243,6 @@ export default {
                 })
                 .then((respuesta)=>{
                     if(respuesta.status == 200){
-                        console.log(respuesta);
                         this.dialogFieldsSuccess = true;
                         setTimeout(()=>{
                             this.dialogFieldsSuccess = false;
@@ -204,6 +254,29 @@ export default {
                 })
             }
             
+        },
+        deleteDialog(){
+            // Open dialog to verify if user is okay deleting the notebook
+            this.deleteConfirmation = true;
+        },
+        cancelDialog(){
+            this.deleteConfirmation = false;
+        },
+        deleteNotebook(notebookId){
+            // Delete the notebook
+            axios.delete(`http://localhost:2046/api/notebook/remove/${notebookId}`, {
+                headers: {
+                    Authorization: this.currentToken
+                }
+            })
+            .then((respuesta)=>{
+                if(respuesta.status == 200){
+                    console.log(respuesta);
+                }
+            })
+            .catch((err)=>{
+                console.log(`Ocurrio un error ${err}`);
+            })
         }
     },
     computed:{
