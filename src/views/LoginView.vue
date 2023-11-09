@@ -127,7 +127,18 @@ export default {
                     this.credentialsErr = true;
                 }
             })
+        },
+        redirection(){
+            let data = localStorage.getItem('userData')
+            if(data){
+                this.$router.push('/dashboard')
+            }else{
+                this.$router.push('/')
+            }
         }
+    },
+    created(){
+        this.redirection()
     }
 }
 </script>
