@@ -109,9 +109,6 @@ export default {
                         user: resUser,
                         token: resToken
                     }
-                    // this.$store.dispatch('addLoggedUserAction', resUser);
-                    // this.$store.dispatch('addUserTokenAction', resToken);
-
                     this.$store.dispatch('loginAction', data)
 
                     console.log(this.$store.state.user);

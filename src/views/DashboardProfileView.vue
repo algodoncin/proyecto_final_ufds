@@ -48,13 +48,21 @@
                         </v-btn>
                     </v-col>
                 </v-row>
-                <v-row>
+                <v-row v-if="updateConfirmation">
                     <v-col cols="3" class="mx-auto">
                         <v-alert
                             type="success"
-                            title="User registered"
+                            title="User Updated"
                             text="User updated"
-                            v-if="updateConfirmation"
+                        ></v-alert>
+                    </v-col>
+                </v-row>
+                <v-row v-if="updateError">
+                    <v-col cols="3" class="mx-auto">
+                        <v-alert
+                            type="error"
+                            title="Existing user"
+                            text="There is already a user with those credentials"
                         ></v-alert>
                     </v-col>
                 </v-row>
@@ -77,6 +85,7 @@ export default {
                 password: ''
             },
             updateConfirmation: false,
+            updateError: false
         }
     },
     methods: {
@@ -108,6 +117,7 @@ export default {
                 .then((respuesta)=>{
                     let res = respuesta;
                     if(res.data.code == 200){
+                        this.updateError = false;
                         this.currentUser.password = '';
                         this.updateConfirmation = true;
                         setTimeout(()=>{
@@ -116,6 +126,9 @@ export default {
                     }
                 })
                 .catch((err)=>{
+                    if(err.response.status == 406){
+                        this.updateError = true;
+                    }
                     console.log(`An error ocurred ${err}`);
                     this.updateConfirmation = false;
                 })
@@ -128,8 +141,26 @@ export default {
                     }
                 })
                 .then((respuesta)=>{
+                    // Close error dialog
+                    this.updateError = false;
+
+                    // Define fields
                     let res = respuesta;
                     if(res.data.code == 200){
+
+                        // Define updated user in local storage and vuex storage
+                        let data = {
+                            user: {
+                                id: res.data.updatedUser._id,
+                                email: res.data.updatedUser.email,
+                                username: res.data.updatedUser.username
+                            },
+                            token: this.currentToken
+                        }
+                        this.$store.dispatch('loginAction', data)
+                        console.log(data);
+
+                        // Adjust profile fields
                         this.currentUser.password = '';
                         this.updateConfirmation = true;
                         setTimeout(()=>{
@@ -138,6 +169,9 @@ export default {
                     }
                 })
                 .catch((err)=>{
+                    if(err.response.status == 406){
+                        this.updateError = true;
+                    }
                     console.log(`An error ocurred ${err}`);
                     this.updateConfirmation = false;
                 })

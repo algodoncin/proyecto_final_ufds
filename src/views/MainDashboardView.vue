@@ -47,6 +47,9 @@ export default {
     },
     created(){
         this.validateAccess();
+    },
+    beforeUpdate(){
+        this.user = this.$store.state.user;
     }
 }
 </script>
