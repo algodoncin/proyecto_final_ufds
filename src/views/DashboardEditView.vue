@@ -108,6 +108,7 @@
                                 prepend-icon="mdi-check"
                                 color="green"
                                 block
+                                @click="deleteNotebook(currentNotebookId)"
                                 >Proceed</v-btn>
                             </v-col>
                             <v-col>
@@ -122,32 +123,55 @@
                     </v-card-text>
                 </v-card>
             </v-dialog>
+            <v-dialog
+            v-model="deleteMessage"
+            transition="dialog-bottom-transition"
+            width="500"
+            persistent>
+                <v-card>
+                    <v-card-text>
+                        <v-card
+                            class="mb-12"
+                            color="surface-variant"
+                            variant="tonal"
+                        >
+                            <div>
+                                <v-alert
+                                    type="success"
+                                    title="Notebook deleted"
+                                    text="You will be redirected to the main menu in a few seconds."
+                                ></v-alert>
+                            </div>
+                        </v-card>
+                    </v-card-text>
+                </v-card>
+            </v-dialog>
             <v-row class="mt-5">
-                    <v-col cols="3" class="mx-auto">
-                        <v-btn
-                        block
-                        class="mb-8"
-                        color="green"
-                        size="large"
-                        variant="tonal"
-                        @click="updateNotebook(this.currentNotebookId, this.notebook)"
-                        >
-                            Update
-                        </v-btn>
-                    </v-col>
-                    <v-col cols="3" class="mx-auto">
-                        <v-btn
-                        block
-                        class="mb-8"
-                        color="red"
-                        size="large"
-                        variant="tonal"
-                        @click="deleteDialog()"
-                        >
-                            Delete
-                        </v-btn>
-                    </v-col>
-                </v-row>
+                <v-col cols="3" class="mx-auto">
+                    <v-btn
+                    block
+                    class="mb-8"
+                    color="green"
+                    size="large"
+                    variant="tonal"
+                    @click="updateNotebook(this.currentNotebookId, this.notebook)"
+                    >
+                        Update
+                    </v-btn>
+                </v-col>
+                <v-col cols="3" class="mx-auto">
+                    <v-btn
+                    block
+                    class="mb-8"
+                    color="red"
+                    size="large"
+                    variant="tonal"
+                    @click="deleteDialog()"
+                    >
+                        Delete
+                    </v-btn>
+                </v-col>
+            </v-row>
         </v-container>
     </v-app>
     
@@ -203,7 +227,7 @@ export default {
 
                     this.notebook = res;    
                     this.markdown = this.notebook.content;
-                    console.log(this.notebook);
+                    // console.log(this.notebook);
                 }
             })
             .catch((err)=>{
@@ -271,7 +295,13 @@ export default {
             })
             .then((respuesta)=>{
                 if(respuesta.status == 200){
-                    console.log(respuesta);
+                    this.deleteConfirmation = false;
+                    this.deleteMessage = true;
+                    setTimeout(()=>{
+                        this.deleteMessage = false;
+                        this.$router.push('/dashboard')
+                    }, 3000)
+                    
                 }
             })
             .catch((err)=>{

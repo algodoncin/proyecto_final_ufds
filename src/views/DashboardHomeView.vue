@@ -120,7 +120,7 @@ export default {
     },
     methods: {
         showUserBooks(userId){
-            console.log(userId);
+            // console.log(userId);
             axios.get(`http://localhost:2046/api/notebook/user/${userId}`, {
                 headers: {
                     Authorization: this.currentToken
@@ -154,7 +154,7 @@ export default {
                     this.dialogFields = false;
                     // console.log(userId);
                     // console.log(notebookToSave);
-                    console.log(respuesta);
+                    // console.log(respuesta);
                     let createdNotebook = respuesta.data.response;
                     this.$router.push(`/dashboard/edit/${createdNotebook._id}`)
                 })
