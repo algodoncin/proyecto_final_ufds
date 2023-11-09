@@ -7,6 +7,7 @@ import DashboardProfileView from '../views/DashboardProfileView.vue'
 import DashboardConfigView from '../views/DashboardConfigView.vue'
 import DashboardSearchView from '../views/DashboardSearchView.vue'
 import DashboardEditView from '../views/DashboardEditView.vue'
+import DashboardReadView from '../views/DashboardReadView.vue'
 
 const routes = [
   {
@@ -54,6 +55,11 @@ const routes = [
         path: '/dashboard/edit/:id',
         name: 'edit',
         component: DashboardEditView
+      },
+      {
+        path: '/dashboard/read/:id',
+        name: 'read',
+        component: DashboardReadView
       },
     ]
   }

@@ -12,7 +12,7 @@
                                     {{notebook.description}}
                                 </v-card-text>
                                 <v-card-actions>
-                                    <v-btn>Read</v-btn>
+                                    <v-btn @click="readNotebookViewRedirection(notebook._id)">Read</v-btn>
                                     <v-btn @click="editNotebookViewRedirection(notebook._id)">Edit</v-btn>
                                 </v-card-actions>
                             </v-card>
@@ -139,7 +139,7 @@ export default {
         openDialog(){
             this.dialogOne = true;
         },
-        createNotebook(userId, notebookToSave){
+        createNotebook(notebookToSave){
             let title = notebookToSave.title;
 
             if(title == '' || title.length < 3){
@@ -166,6 +166,9 @@ export default {
         },
         editNotebookViewRedirection(notebookId){
             this.$router.push(`/dashboard/edit/${notebookId}`)
+        },
+        readNotebookViewRedirection(notebookId){
+            this.$router.push(`/dashboard/read/${notebookId}`)
         }
     },
     created(){
