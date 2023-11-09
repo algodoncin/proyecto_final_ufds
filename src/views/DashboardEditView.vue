@@ -55,7 +55,7 @@
                     <v-window-item value="preview">
                         <fieldset class="show">
                             <legend>Content:</legend>
-                            <div v-html="test"></div>
+                            <div v-html="parseToHTML"></div>
                         </fieldset>
                     </v-window-item>
                 </v-window>
@@ -178,7 +178,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from 'axios';
 import { marked } from 'marked';    
 
 export default {
@@ -310,7 +310,7 @@ export default {
         }
     },
     computed:{
-        test(){
+        parseToHTML(){
             return marked.parse(this.markdown)
         }
     },

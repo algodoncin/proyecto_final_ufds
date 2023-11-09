@@ -97,7 +97,7 @@ export default {
         },
         updateUser(){
             let userToUpdate = this.currentUser;
-            console.log(userToUpdate);
+            // console.log(userToUpdate);
 
             if(userToUpdate.password){
                 axios.put(`http://localhost:2046/api/user/update/`, userToUpdate, {
