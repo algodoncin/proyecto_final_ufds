@@ -4,17 +4,17 @@
             <v-container>
                 <v-card 
                 class="mt-5 mx-5"
-                height="500px"
+                min-height="500px"
                 color="#385F73">
                     <div>
                         <v-row>
-                            <v-col cols="4">
+                            <v-col cols="4" align="center" >
                                 <v-avatar
                                     class="ma-5"
                                     size="200"
                                     rounded="10"
                                 >
-                                    <v-img :src="avatar"></v-img>
+                                    <v-img :src="avatar" class="bg-white"></v-img>
                                 </v-avatar>
                             </v-col>
                             <v-col 
@@ -23,16 +23,48 @@
                                 <v-row>
                                     <v-card-text>
                                         <div color="red"></div>
-                                        <v-card-title>Follow info</v-card-title>
+                                        <v-card-title>
+                                            <v-row>
+                                                <v-col align="center" >
+                                                    <span>{{followCounter.notebooks}}</span>
+                                                    <br>
+                                                    Notebooks
+                                                </v-col>
+                                                <v-col align="center" >
+                                                    <span >{{followCounter.followed}}</span>
+                                                    <br>
+                                                    Followers
+                                                </v-col>
+                                                <v-col align="center" >
+                                                    <span>{{followCounter.following}}</span>
+                                                    <br>
+                                                    Following
+                                                </v-col>
+                                            </v-row>
+                                        </v-card-title>
                                     </v-card-text>
                                 </v-row>
                                 <v-row
                                 class="mt-7">
                                     <v-card-text>
-                                        <div color="red"></div>
-                                        <v-card-title>{{user.username}}</v-card-title>
+                                        <v-card-title align="center">@{{user.username}}</v-card-title>
                                     </v-card-text>
                                 </v-row>
+                                <!--  -->
+                                <v-row v-if="showFollowButton">
+                                    <v-col cols align="center" >
+                                        <v-btn
+                                            class="mb-8"
+                                            color="blue"
+                                            size="large"
+                                            variant="tonal"
+                                            @click="followUser()"
+                                        >
+                                            Follow
+                                        </v-btn>
+                                    </v-col>
+                                </v-row>
+                                <!--  -->
                             </v-col>
                         </v-row>
                         <v-container>
@@ -70,12 +102,18 @@ export default {
             // Global variables
             currentId: this.$store.state.user.id,
             currentToken: this.$store.state.token,
-            currentUserId: this.$route.params.id,
+            paramsUserId: this.$route.params.id,
             // Standard variables
             user: {},
             avatar: '',
-            userNotebooks: []
+            userNotebooks: [],
+            followCounter: {
+                followed: 0,
+                following: 0,
+                notebooks: 0
+            },
             // Diaglos
+            showFollowButton: true
         }
     },
     methods: {
@@ -112,11 +150,44 @@ export default {
         },
         readNotebookViewRedirection(notebookId){
             this.$router.push(`/dashboard/read/${notebookId}`)
+        },
+        userFollowsCountInfo(userId){
+            axios.get(`http://localhost:2046/api/user/counter/${userId}`, {
+                headers: {
+                    Authorization: this.currentToken
+                }
+            })
+            .then((respuesta)=>{
+                console.log(respuesta);
+                this.followCounter = {
+                    followed: respuesta.data.followed,
+                    following: respuesta.data.following,
+                    notebooks: respuesta.data.notebooks
+                }
+            })
+            .catch((err)=>{
+                console.log(`Ocurrio un error ${err}`);
+            })
+        },
+        userFollows(){
+
+        },
+        userFollowing(){
+
+        },
+        userVerification(id){
+            if(id != this.currentId){
+                this.showFollowButton = true
+            }else{
+                this.showFollowButton = false
+            }
         }
     },
     created(){
-        this.getUser(this.currentUserId)
-        this.getUserNotebooks(this.currentUserId)
+        this.getUser(this.paramsUserId)
+        this.getUserNotebooks(this.paramsUserId)
+        this.userFollowsCountInfo(this.paramsUserId)
+        this.userVerification(this.paramsUserId)
     }
 }
 </script>
