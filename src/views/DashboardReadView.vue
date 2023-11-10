@@ -4,7 +4,7 @@
             <v-main>
                 <!-- Content --> 
                 <v-container>
-                    <h1>read</h1>
+                    <h2>Autor: <a href="">{{ autor }}</a></h2>
                     <v-card>
                         <v-card-title>{{ notebook.title }}</v-card-title>
                         <v-card-subtitle>{{ notebook.description }}</v-card-subtitle>
@@ -31,7 +31,8 @@ export default {
             currentToken: this.$store.state.token,
             currentNotebookId: this.$route.params.id,
             markdown: '',
-            notebook: ''
+            notebook: {},
+            autor: ''
         }
     },
     methods: {
@@ -48,6 +49,7 @@ export default {
                     this.notebook = res;    
                     this.markdown = this.notebook.content;
                     console.log(this.notebook);
+                    this.autor = this.notebook.user.username;
                 }
             })
             .catch((err)=>{
