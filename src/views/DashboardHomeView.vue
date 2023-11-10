@@ -75,7 +75,7 @@
                             prepend-icon="mdi-check"
                             color="indigo"
                             block
-                            @click="createNotebook(currentId, this.notebook)"
+                            @click="createNotebook(this.notebook)"
                             >Save</v-btn>
                         </v-card-text>
                     </v-card>
@@ -141,9 +141,10 @@ export default {
         },
         createNotebook(notebookToSave){
             let title = notebookToSave.title;
-
+            console.log(notebookToSave, title);
             if(title == '' || title.length < 3){
                 this.dialogFields = true;
+                console.log(title.length);
             }else{
                 axios.post("http://localhost:2046/api/notebook/save", notebookToSave, {
                     headers: {
