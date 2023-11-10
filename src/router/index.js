@@ -8,6 +8,7 @@ import DashboardConfigView from '../views/DashboardConfigView.vue'
 import DashboardSearchView from '../views/DashboardSearchView.vue'
 import DashboardEditView from '../views/DashboardEditView.vue'
 import DashboardReadView from '../views/DashboardReadView.vue'
+import DashboardUserView from '../views/DashboardUserView.vue'
 
 const routes = [
   {
@@ -60,6 +61,11 @@ const routes = [
         path: '/dashboard/read/:id',
         name: 'read',
         component: DashboardReadView
+      },
+      {
+        path: '/dashboard/user/:id',
+        name: 'user',
+        component: DashboardUserView
       },
     ]
   }

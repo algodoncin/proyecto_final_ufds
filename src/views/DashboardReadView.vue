@@ -4,12 +4,12 @@
             <v-main>
                 <!-- Content --> 
                 <v-container>
-                    <h2>Autor: <a href="">{{ autor }}</a></h2>
+                    <h2>Autor: <span @click="notebookAutorRedirection(autorId)">{{ autor }}</span></h2>
                     <v-card>
                         <v-card-title>{{ notebook.title }}</v-card-title>
                         <v-card-subtitle>{{ notebook.description }}</v-card-subtitle>
                         <hr>
-                        <v-card-text v-html="parseToHTML">
+                        <v-card-text v-html="parseToHTML" class="content">
 
                         </v-card-text>
                     </v-card>
@@ -32,7 +32,8 @@ export default {
             currentNotebookId: this.$route.params.id,
             markdown: '',
             notebook: {},
-            autor: ''
+            autor: '',
+            autorId:''
         }
     },
     methods: {
@@ -48,13 +49,19 @@ export default {
 
                     this.notebook = res;    
                     this.markdown = this.notebook.content;
+
                     console.log(this.notebook);
+
                     this.autor = this.notebook.user.username;
+                    this.autorId = this.notebook.user._id;
                 }
             })
             .catch((err)=>{
                 console.log(`Ocurrio un error ${err}`);
             })
+        },
+        notebookAutorRedirection(userId){
+            this.$router.push(`/dashboard/user/${userId}`)
         }
     },
     computed: {
@@ -67,3 +74,10 @@ export default {
     }
 }
 </script>
+<style scoped>
+
+a {
+  text-decoration: none;
+}
+
+</style>
