@@ -4,6 +4,7 @@
             <!-- Content --> 
             <v-container>
                     <v-row class="mt-3">
+                        <h1 v-if="noBooks">There are no books to show</h1>
                         <v-col cols="3" v-for="(notebook, i) in notebooks" :key="i">
                             <v-card >
                                 <v-card-title>{{notebook.title}}</v-card-title>
@@ -116,7 +117,8 @@ export default {
             ],
             // Booleans
             dialogOne: false,
-            dialogFields: false
+            dialogFields: false,
+            noBooks: false
         }
     },
     methods: {
@@ -129,12 +131,20 @@ export default {
             })
             .then((respuesta)=>{
                 if(respuesta.status == 200){
+                    this.noBooks == false;
                     let res = respuesta.data;
                     this.notebooks = res.notebooks;
+                    
                 }
             })
-            .catch((err)=>{
-                console.log(`Ocurrio un error ${err}`);
+            .catch((err)=>{  
+                let code = err.response.status;
+                if(code == 404){
+                    this.noBooks = true;
+                    // console.log(this.noBooks, code);
+                }else{
+                    console.log(`Ocurrio un error ${err}`);
+                }
             })
         },
         openDialog(){
