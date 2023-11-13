@@ -55,6 +55,7 @@
                             item-value="value"
                             item-title="type"
                             required
+                            :value="notebook.visibility"
                             v-model="notebook.visibility"
                             ></v-select>
                             <v-card
@@ -97,20 +98,20 @@ export default {
             notebook: {
                 title: '',
                 description: '',
-                visibility: 2
+                visibility: 3
             },
             visibility: [
                 {
                     type: "Private",
-                    value: 0
-                },
-                {
-                    type: "Followers only",
                     value: 1
                 },
                 {
-                    type: "Public",
+                    type: "Followers only",
                     value: 2
+                },
+                {
+                    type: "Public",
+                    value: 3
                 }
             ],
             // Booleans

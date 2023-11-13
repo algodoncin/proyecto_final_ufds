@@ -31,12 +31,12 @@
                                                     Notebooks
                                                 </v-col>
                                                 <v-col align="center" >
-                                                    <span class="pointer">{{followCounter.followed}}</span>
+                                                    <span class="pointer" @click="following()">{{followCounter.followed}}</span>
                                                     <br>
                                                     Followers
                                                 </v-col>
                                                 <v-col align="center" >
-                                                    <span class="pointer">{{followCounter.following}}</span>
+                                                    <span class="pointer" @click="followedBy()">{{followCounter.following}}</span>
                                                     <br>
                                                     Following
                                                 </v-col>
@@ -84,10 +84,68 @@
                                 </v-col>
                             </v-row>
                         </v-container>
-                        
                     </div>  
                 </v-card>
-                
+                    <v-dialog
+                    v-model="followsDialog"
+                    transition="dialog-top-transition"
+                    max-width="500"
+                    max-height="400px">
+                        <v-card :title="dialogTitle" :subtitle="dialogSubtitle">
+                            <v-card-text >
+                                <v-row>
+                                    <v-col >
+                                        hola
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col>
+                                        hola
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col>
+                                        hola
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col>
+                                        hola
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col>
+                                        hola
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col>
+                                        hola
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col>
+                                        hola
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col>
+                                        hola
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col>
+                                        hola
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col>
+                                        hola
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                        </v-card>
+                    </v-dialog>
             </v-container>
         </v-main>
     </v-app>
@@ -112,8 +170,13 @@ export default {
                 following: 0,
                 notebooks: 0
             },
+            // Follows variables
+            dialogTitle: '',
+            dialogSubtitle: '',
+            follows: [],
             // Diaglos
-            showFollowButton: true
+            showFollowButton: true,
+            followsDialog: false
         }
     },
     methods: {
@@ -169,11 +232,31 @@ export default {
                 console.log(`Ocurrio un error ${err}`);
             })
         },
-        userFollows(){
-
+        following(){
+            // Define dialog title and subtitle
+            this.dialogTitle = "Following";
+            this.dialogSubtitle = "Users followed by username"
+            let parameterUser = this.$route.params.id;
+            // Get data
+            axios.get(`http://localhost:2046/api/follow/following/${parameterUser}`, {
+                headers: {
+                    Authorization: this.currentToken
+                }
+            })
+            .then((response)=>{
+                console.log(response);
+                // Open dialog
+                this.followsDialog = true;
+            })
+            .catch((err)=>{
+                console.log(`Ocurrio un error ${err}`);
+            })
+            
         },
-        userFollowing(){
-
+        followedBy(){
+            this.dialogTitle = "Followed by";
+            this.dialogSubtitle = "Users who follows username"
+            this.followsDialog = true;
         },
         userVerification(id){
             if(id != this.currentId){

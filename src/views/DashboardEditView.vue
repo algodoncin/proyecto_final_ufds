@@ -29,6 +29,7 @@
                     item-value="value"
                     item-title="type"
                     required
+                    :value="notebook.visibility"
                     v-model="notebook.visibility"
                     ></v-select>
                 </v-col>
@@ -193,15 +194,15 @@ export default {
             visibility: [
                 {
                     type: "Private",
-                    value: 0
-                },
-                {
-                    type: "Followers only",
                     value: 1
                 },
                 {
-                    type: "Public",
+                    type: "Followers only",
                     value: 2
+                },
+                {
+                    type: "Public",
+                    value: 3
                 }
             ],
             notebook: {},
@@ -227,7 +228,7 @@ export default {
 
                     this.notebook = res;    
                     this.markdown = this.notebook.content;
-                    // console.log(this.notebook);
+                    // console.log(this.notebook);  
                 }
             })
             .catch((err)=>{
@@ -236,7 +237,7 @@ export default {
         },
         updateNotebook(notebookId, notebook){
             let title = notebook.title;
-
+            console.log(notebook);
             // Validate if title has more than 3 characters
             if(title == '' || title.length < 3){
                 this.dialogFieldsError = true;
@@ -251,16 +252,16 @@ export default {
                     title: '',
                     description: '',
                     content: '',
-                    visibility: 0
+                    visibility: 1
                 };
-
+                console.log(notebook);
                 // Fill object fields
-                notebookToUpdate.title = this.notebook.title;
-                notebookToUpdate.description = this.notebook.description;
-                notebookToUpdate.content = this.notebook.content;
-                notebookToUpdate.visibility = this.notebook.visibility;
+                notebookToUpdate.title = notebook.title;
+                notebookToUpdate.description = notebook.description;
+                notebookToUpdate.content = notebook.content;
+                notebookToUpdate.visibility = notebook.visibility;
                 // Update notebook
-                axios.put(`http://localhost:2046/api/notebook/update/${notebookId}`, notebook,{
+                axios.put(`http://localhost:2046/api/notebook/update/${notebookId}`, notebookToUpdate,{
                     headers: {
                         Authorization: this.currentToken
                     }
