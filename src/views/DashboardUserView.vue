@@ -31,12 +31,12 @@
                                                     Notebooks
                                                 </v-col>
                                                 <v-col align="center" >
-                                                    <span class="pointer" @click="following()">{{followCounter.followed}}</span>
+                                                    <span class="pointer" @click="followedBy()">{{followCounter.followed}}</span>
                                                     <br>
                                                     Followers
                                                 </v-col>
                                                 <v-col align="center" >
-                                                    <span class="pointer" @click="followedBy()">{{followCounter.following}}</span>
+                                                    <span class="pointer" @click="following()">{{followCounter.following}}</span>
                                                     <br>
                                                     Following
                                                 </v-col>
@@ -86,61 +86,58 @@
                         </v-container>
                     </div>  
                 </v-card>
+                <!-- Follows Dialogs -->
                     <v-dialog
-                    v-model="followsDialog"
+                    v-model="followingDialog"
                     transition="dialog-top-transition"
                     max-width="500"
                     max-height="400px">
                         <v-card :title="dialogTitle" :subtitle="dialogSubtitle">
                             <v-card-text >
-                                <v-row>
-                                    <v-col >
-                                        hola
+                                <v-row v-for="(follow, i) in follows" :key="i">
+                                    <v-col cols="4" align="center">
+                                        <img :src="`http://localhost:2046/api/user/avatar/${follow.followed.image}`" alt="" :width="50" rounded="10">
+                                    </v-col>
+                                    <v-col cols="4" align="center" class="fill-height my-auto">
+                                        {{follow.followed.username}}
+                                    </v-col>
+                                    <v-col cols="4" align="center" class="fill-height my-auto">
+                                        <v-btn
+                                            class="mb-8"
+                                            color="blue"
+                                            size="large"
+                                            variant="tonal"
+                                        >
+                                            Follow
+                                        </v-btn>
                                     </v-col>
                                 </v-row>
-                                <v-row>
-                                    <v-col>
-                                        hola
+                            </v-card-text>
+                        </v-card>
+                    </v-dialog>
+                    <v-dialog
+                    v-model="followersDialog"
+                    transition="dialog-top-transition"
+                    max-width="500"
+                    max-height="400px">
+                        <v-card :title="dialogTitle" :subtitle="dialogSubtitle">
+                            <v-card-text >
+                                <v-row v-for="(follow, i) in follows" :key="i">
+                                    <v-col cols="4" align="center">
+                                        <img :src="`http://localhost:2046/api/user/avatar/${follow.user.image}`" alt="" :width="50" rounded="10">
                                     </v-col>
-                                </v-row>
-                                <v-row>
-                                    <v-col>
-                                        hola
+                                    <v-col cols="4" align="center" class="fill-height my-auto">
+                                        {{follow.user.username}}
                                     </v-col>
-                                </v-row>
-                                <v-row>
-                                    <v-col>
-                                        hola
-                                    </v-col>
-                                </v-row>
-                                <v-row>
-                                    <v-col>
-                                        hola
-                                    </v-col>
-                                </v-row>
-                                <v-row>
-                                    <v-col>
-                                        hola
-                                    </v-col>
-                                </v-row>
-                                <v-row>
-                                    <v-col>
-                                        hola
-                                    </v-col>
-                                </v-row>
-                                <v-row>
-                                    <v-col>
-                                        hola
-                                    </v-col>
-                                </v-row>
-                                <v-row>
-                                    <v-col>
-                                        hola
-                                    </v-col>
-                                </v-row>
-                                <v-row>
-                                    <v-col>
-                                        hola
+                                    <v-col cols="4" align="center" class="fill-height my-auto">
+                                        <v-btn
+                                            class="mb-8"
+                                            color="blue"
+                                            size="large"
+                                            variant="tonal"
+                                        >
+                                            Follow
+                                        </v-btn>
                                     </v-col>
                                 </v-row>
                             </v-card-text>
@@ -174,9 +171,13 @@ export default {
             dialogTitle: '',
             dialogSubtitle: '',
             follows: [],
+            followsAvatar: '',
             // Diaglos
             showFollowButton: true,
-            followsDialog: false
+            followingDialog: false,
+            followersDialog: false,
+            isFollowed: false,
+            isFollowing: false
         }
     },
     methods: {
@@ -245,8 +246,12 @@ export default {
             })
             .then((response)=>{
                 console.log(response);
+                // Fill local variable with users list
+                this.follows = response.data.response;
+                console.log(this.follows);
+
                 // Open dialog
-                this.followsDialog = true;
+                this.followingDialog = true;
             })
             .catch((err)=>{
                 console.log(`Ocurrio un error ${err}`);
@@ -256,7 +261,30 @@ export default {
         followedBy(){
             this.dialogTitle = "Followed by";
             this.dialogSubtitle = "Users who follows username"
-            this.followsDialog = true;
+            let parameterUser = this.$route.params.id;
+            // Get data
+            axios.get(`http://localhost:2046/api/follow/followers/${parameterUser}`, {
+                headers: {
+                    Authorization: this.currentToken
+                }
+            })
+            .then((response)=>{
+                console.log(response);
+                // Fill local variable with users list
+                this.follows = response.data.response;
+                console.log(this.follows);
+
+                // Open dialog
+                this.followersDialog = true;
+            })
+            .catch((err)=>{
+                console.log(`Ocurrio un error ${err}`);
+            })
+        },
+        getFollowAvatar(follow){
+            const avatar = `http://localhost:2046/api/user/avatar/${follow.followed.image}`;
+
+            return avatar
         },
         userVerification(id){
             if(id != this.currentId){
