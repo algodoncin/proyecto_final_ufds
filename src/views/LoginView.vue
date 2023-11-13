@@ -109,9 +109,6 @@ export default {
                         user: resUser,
                         token: resToken
                     }
-                    // this.$store.dispatch('addLoggedUserAction', resUser);
-                    // this.$store.dispatch('addUserTokenAction', resToken);
-
                     this.$store.dispatch('loginAction', data)
 
                     console.log(this.$store.state.user);
@@ -130,7 +127,18 @@ export default {
                     this.credentialsErr = true;
                 }
             })
+        },
+        redirection(){
+            let data = localStorage.getItem('userData')
+            if(data){
+                this.$router.push('/dashboard')
+            }else{
+                this.$router.push('/')
+            }
         }
+    },
+    created(){
+        this.redirection()
     }
 }
 </script>

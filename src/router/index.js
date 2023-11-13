@@ -3,10 +3,11 @@ import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import MainDashboardView from '../views/MainDashboardView.vue'
 import DashboardHomeView from '../views/DashboardHomeView.vue'
-import DashboardProfileView from '../views/DashboardProfileView.vue'
 import DashboardConfigView from '../views/DashboardConfigView.vue'
 import DashboardSearchView from '../views/DashboardSearchView.vue'
 import DashboardEditView from '../views/DashboardEditView.vue'
+import DashboardReadView from '../views/DashboardReadView.vue'
+import DashboardUserView from '../views/DashboardUserView.vue'
 
 const routes = [
   {
@@ -36,11 +37,6 @@ const routes = [
         component: DashboardHomeView
       },
       {
-        path: '/dashboard/profile',
-        name: 'profile',
-        component: DashboardProfileView
-      },
-      {
         path: '/dashboard/configuration',
         name: 'configuration',
         component: DashboardConfigView
@@ -54,6 +50,16 @@ const routes = [
         path: '/dashboard/edit/:id',
         name: 'edit',
         component: DashboardEditView
+      },
+      {
+        path: '/dashboard/read/:id',
+        name: 'read',
+        component: DashboardReadView
+      },
+      {
+        path: '/dashboard/user/:id',
+        name: 'user',
+        component: DashboardUserView
       },
     ]
   }

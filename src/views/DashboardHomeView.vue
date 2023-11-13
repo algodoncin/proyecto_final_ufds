@@ -12,7 +12,7 @@
                                     {{notebook.description}}
                                 </v-card-text>
                                 <v-card-actions>
-                                    <v-btn>Read</v-btn>
+                                    <v-btn @click="readNotebookViewRedirection(notebook._id)">Read</v-btn>
                                     <v-btn @click="editNotebookViewRedirection(notebook._id)">Edit</v-btn>
                                 </v-card-actions>
                             </v-card>
@@ -75,8 +75,8 @@
                             prepend-icon="mdi-check"
                             color="indigo"
                             block
-                            @click="createNotebook(currentId, this.notebook)"
-                            >Guardar</v-btn>
+                            @click="createNotebook(this.notebook)"
+                            >Save</v-btn>
                         </v-card-text>
                     </v-card>
                 </v-dialog>
@@ -120,7 +120,7 @@ export default {
     },
     methods: {
         showUserBooks(userId){
-            console.log(userId);
+            // console.log(userId);
             axios.get(`http://localhost:2046/api/notebook/user/${userId}`, {
                 headers: {
                     Authorization: this.currentToken
@@ -139,11 +139,12 @@ export default {
         openDialog(){
             this.dialogOne = true;
         },
-        createNotebook(userId, notebookToSave){
+        createNotebook(notebookToSave){
             let title = notebookToSave.title;
-
+            console.log(notebookToSave, title);
             if(title == '' || title.length < 3){
                 this.dialogFields = true;
+                console.log(title.length);
             }else{
                 axios.post("http://localhost:2046/api/notebook/save", notebookToSave, {
                     headers: {
@@ -154,7 +155,7 @@ export default {
                     this.dialogFields = false;
                     // console.log(userId);
                     // console.log(notebookToSave);
-                    console.log(respuesta);
+                    // console.log(respuesta);
                     let createdNotebook = respuesta.data.response;
                     this.$router.push(`/dashboard/edit/${createdNotebook._id}`)
                 })
@@ -166,6 +167,9 @@ export default {
         },
         editNotebookViewRedirection(notebookId){
             this.$router.push(`/dashboard/edit/${notebookId}`)
+        },
+        readNotebookViewRedirection(notebookId){
+            this.$router.push(`/dashboard/read/${notebookId}`)
         }
     },
     created(){

@@ -179,8 +179,19 @@ export default {
                 this.passwordMatch = true
             }
 
+        },
+        redirection(){
+            let data = localStorage.getItem('userData')
+            if(data){
+                this.$router.push('/dashboard')
+            }else{
+                this.$router.push('/register')
+            }
         }
     },
+    created(){
+        this.redirection()
+    }
 }
 
 </script>
