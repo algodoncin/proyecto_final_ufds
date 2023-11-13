@@ -70,6 +70,9 @@
                         <v-container>
                             <h3>Notebooks this user owns:</h3>
                             <v-row class="mt-3">
+                                <v-col align="center" class="fill-height my-auto" v-if="ifNotebooks">
+                                    <h2>No notebooks were found</h2>
+                                </v-col>
                                 <v-col cols="3" v-for="(notebook, i) in userNotebooks" :key="i">
                                     <v-card >
                                         <v-card-title>{{notebook.title}}</v-card-title>
@@ -99,11 +102,10 @@
                                         <img :src="`http://localhost:2046/api/user/avatar/${follow.followed.image}`" alt="" :width="50" rounded="10">
                                     </v-col>
                                     <v-col cols="4" align="center" class="fill-height my-auto">
-                                        {{follow.followed.username}}
+                                        <span @click="followRedirection(follow.followed._id)">{{follow.followed.username}}</span>
                                     </v-col>
                                     <v-col cols="4" align="center" class="fill-height my-auto">
                                         <v-btn
-                                            class="mb-8"
                                             color="blue"
                                             size="large"
                                             variant="tonal"
@@ -127,11 +129,10 @@
                                         <img :src="`http://localhost:2046/api/user/avatar/${follow.user.image}`" alt="" :width="50" rounded="10">
                                     </v-col>
                                     <v-col cols="4" align="center" class="fill-height my-auto">
-                                        {{follow.user.username}}
+                                        <span @click="followRedirection(follow.user._id)">{{follow.user.username}}</span>
                                     </v-col>
                                     <v-col cols="4" align="center" class="fill-height my-auto">
                                         <v-btn
-                                            class="mb-8"
                                             color="blue"
                                             size="large"
                                             variant="tonal"
@@ -167,6 +168,7 @@ export default {
                 following: 0,
                 notebooks: 0
             },
+            ifNotebooks: false,
             // Follows variables
             dialogTitle: '',
             dialogSubtitle: '',
@@ -204,16 +206,21 @@ export default {
                 }
             })
             .then((respuesta)=>{
+                this.ifNotebooks = false;
                 console.log(respuesta);
                 const notebooks = respuesta.data.notebooks;
                 this.userNotebooks = notebooks;
             })
             .catch((err)=>{
                 console.log(`Ocurrio un error ${err}`);
+                if(err.response.status == 404){
+                    this.userNotebooks = [];
+                    this.ifNotebooks = true;
+                }
             })
         },
         readNotebookViewRedirection(notebookId){
-            this.$router.push(`/dashboard/read/${notebookId}`)
+            this.$route.push(`/dashboard/read/${notebookId}`)
         },
         userFollowsCountInfo(userId){
             axios.get(`http://localhost:2046/api/user/counter/${userId}`, {
@@ -292,6 +299,13 @@ export default {
             }else{
                 this.showFollowButton = false
             }
+        },
+        followRedirection(userId){
+            this.paramsUserId = userId;
+            this.$router.push(`/dashboard/user/${userId}`)
+            
+            this.followingDialog = false;
+            this.followersDialog = false;
         }
     },
     created(){
@@ -299,7 +313,16 @@ export default {
         this.getUserNotebooks(this.paramsUserId)
         this.userFollowsCountInfo(this.paramsUserId)
         this.userVerification(this.paramsUserId)
+    },
+    updated(){
+        this.getUser(this.paramsUserId)
+        this.getUserNotebooks(this.paramsUserId)
+        this.userFollowsCountInfo(this.paramsUserId)
+        this.userVerification(this.paramsUserId)
     }
+    // watch: {
+        
+    // }
 }
 </script>
 <style scoped>
