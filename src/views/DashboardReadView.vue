@@ -50,8 +50,6 @@ export default {
                     this.notebook = res;    
                     this.markdown = this.notebook.content;
 
-                    console.log(this.notebook);
-
                     this.autor = this.notebook.user.username;
                     this.autorId = this.notebook.user._id;
                 }

@@ -20,7 +20,7 @@ export default {
     name: 'MainDashboardView',
     data(){
         return{
-            // currentId: this.$store.state.user.id,
+            currentId: this.$store.state.user.id,
             currentToken: this.$store.state.token,
             conf: true,
             user: {
@@ -48,6 +48,7 @@ export default {
             }
         },
         redirectProfile(id){
+            console.log(id);
             this.$router.push(`/dashboard/user/${id}`)
         }
     },
