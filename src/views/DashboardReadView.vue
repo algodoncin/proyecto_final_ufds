@@ -4,7 +4,7 @@
             <v-main>
                 <!-- Content --> 
                 <v-container>
-                    <h2>Autor: <span @click="notebookAutorRedirection(autorId)">{{ autor }}</span></h2>
+                    <h2>Autor: <span @click="notebookAutorRedirection(autorId)" class="pointer">{{ autor }}</span></h2>
                     <v-card>
                         <v-card-title>{{ notebook.title }}</v-card-title>
                         <v-card-subtitle>{{ notebook.description }}</v-card-subtitle>
@@ -76,8 +76,7 @@ export default {
 </script>
 <style scoped>
 
-a {
-  text-decoration: none;
+.pointer{
+    cursor: pointer;
 }
-
 </style>

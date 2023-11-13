@@ -26,17 +26,17 @@
                                         <v-card-title>
                                             <v-row>
                                                 <v-col align="center" >
-                                                    <span>{{followCounter.notebooks}}</span>
+                                                    <span class="pointer">{{followCounter.notebooks}}</span>
                                                     <br>
                                                     Notebooks
                                                 </v-col>
                                                 <v-col align="center" >
-                                                    <span >{{followCounter.followed}}</span>
+                                                    <span class="pointer">{{followCounter.followed}}</span>
                                                     <br>
                                                     Followers
                                                 </v-col>
                                                 <v-col align="center" >
-                                                    <span>{{followCounter.following}}</span>
+                                                    <span class="pointer">{{followCounter.following}}</span>
                                                     <br>
                                                     Following
                                                 </v-col>
@@ -191,3 +191,8 @@ export default {
     }
 }
 </script>
+<style scoped>
+
+.pointer{
+    cursor: pointer;
+}</style>
