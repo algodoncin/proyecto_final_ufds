@@ -57,16 +57,20 @@
                                             color="green"
                                             size="large"
                                             variant="tonal"
+                                            v-if="isUnfollowed"
                                             @click="followUser()"
                                         >
                                             Follow
                                         </v-btn>
                                     </v-col>
+                                </v-row>
+                                <v-row v-if="showFollowButton">
                                     <v-col cols align="center" >
                                         <v-btn
                                             color="red"
                                             size="large"
                                             variant="tonal"
+                                            v-if="isFollowed"
                                             @click="unfollowUser()"
                                         >
                                             Unfollow
@@ -188,7 +192,7 @@ export default {
             followingDialog: false,
             followersDialog: false,
             isFollowed: false,
-            isFollowing: false
+            isUnfollowed: false
         }
     },
     methods: {
@@ -318,7 +322,19 @@ export default {
                 }
             })
             .then((res)=>{
-                console.log(res);
+                if(res.status == 200){
+                    this.isFollowed = false;
+                    this.isUnfollowed = true;
+                    let followersList = res.data.followed_by;
+                    for(let i = 0; i<followersList.length; i++){
+                        if(loggedUser === followersList[i]){
+                            console.log("yes");
+                            this.isUnfollowed = false; 
+                            this.isFollowed = true;
+                            break;
+                        }
+                    }
+                }
             })
             .catch((err)=>{
                 console.log(`An error ocurred`);
