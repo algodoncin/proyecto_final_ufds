@@ -264,7 +264,7 @@ export default {
             .then((response)=>{
                 // Fill local variable with users list
                 this.follows = response.data.response;
-
+                console.log(this.follows);
                 // Open dialog
                 this.followingDialog = true;
             })
@@ -342,11 +342,40 @@ export default {
             })
             console.log("On screen "+onScreenUser);
         },
-        followUser(){
+        async followUser(){
+            let userToFollow = {"followed": this.paramsUserId}
 
+            await axios.post(`http://localhost:2046/api/follow/save`, userToFollow, {
+                headers: {
+                    Authorization: this.currentToken
+                }
+            })
+            .then((res)=>{
+                console.log(res);
+                this.userFollowsCountInfo(this.paramsUserId)
+                this.isUnfollowed = false;
+                this.isFollowed = true;
+            })
+            .catch((err)=>{
+                console.log(err);
+            })
         },
         unfollowUser(){
-
+            axios.delete(`http://localhost:2046/api/follow/unfollow/${this.paramsUserId}`, {
+                headers: {
+                    Authorization: this.currentToken
+                }
+            })
+            .then((res)=>{
+                console.log(res);
+                this.userFollowsCountInfo(this.paramsUserId)
+                this.isUnfollowed = true;
+                this.isFollowed = false;
+            })
+            .catch((err)=>{
+                console.log("An error ocurred");
+                console.log(err);
+            })
         }
     },
     created(){
