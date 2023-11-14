@@ -57,8 +57,8 @@
                                             color="green"
                                             size="large"
                                             variant="tonal"
-                                            v-if="isUnfollowed"
-                                            @click="followUser()"
+                                            v-if="unfollowBtn"
+                                            @click="followUser(), this.getUserNotebooks(this.paramsUserId),noteBooksVisibility(this.currentId, this.paramsUserId)"
                                         >
                                             Follow
                                         </v-btn>
@@ -70,8 +70,8 @@
                                             color="red"
                                             size="large"
                                             variant="tonal"
-                                            v-if="isFollowed"
-                                            @click="unfollowUser()"
+                                            v-if="followBtn"
+                                            @click="unfollowUser(), this.getUserNotebooks(this.paramsUserId),noteBooksVisibility(this.currentId, this.paramsUserId)"
                                         >
                                             Unfollow
                                         </v-btn>
@@ -117,13 +117,20 @@
                                     <v-col cols="4" align="center" class="fill-height my-auto">
                                         <span class="pointer" @click="followRedirection(follow.followed._id)">{{follow.followed.username}}</span>
                                     </v-col>
-                                    <v-col cols="4" align="center" class="fill-height my-auto">
+                                    <v-col cols="4" align="center" class="fill-height my-auto" >
                                         <v-btn
                                             color="blue"
                                             size="large"
                                             variant="tonal"
                                         >
                                             Follow
+                                        </v-btn>
+                                        <v-btn
+                                            color="red"
+                                            size="large"
+                                            variant="tonal"
+                                        >
+                                            Unfollow
                                         </v-btn>
                                     </v-col>
                                 </v-row>
@@ -151,6 +158,13 @@
                                             variant="tonal"
                                         >
                                             Follow
+                                        </v-btn>
+                                        <v-btn
+                                            color="red"
+                                            size="large"
+                                            variant="tonal"
+                                        >
+                                            Unfollow
                                         </v-btn>
                                     </v-col>
                                 </v-row>
@@ -191,8 +205,10 @@ export default {
             showFollowButton: true,
             followingDialog: false,
             followersDialog: false,
-            isFollowed: false,
-            isUnfollowed: false
+            followBtn: false,
+            unfollowBtn: false,
+            isFriend: false,
+            showDialogFollow: true
         }
     },
     methods: {
@@ -315,7 +331,6 @@ export default {
             this.followersDialog = false;
         },
         followVerification(loggedUser, onScreenUser){
-            console.log("logged: "+loggedUser);
             axios.get(`http://localhost:2046/api/follow/followers/${onScreenUser}`, {
                 headers: {
                     Authorization: this.currentToken
@@ -323,14 +338,13 @@ export default {
             })
             .then((res)=>{
                 if(res.status == 200){
-                    this.isFollowed = false;
-                    this.isUnfollowed = true;
+                    this.followBtn = false;
+                    this.unfollowBtn = true;
                     let followersList = res.data.followed_by;
                     for(let i = 0; i<followersList.length; i++){
                         if(loggedUser === followersList[i]){
-                            console.log("yes");
-                            this.isUnfollowed = false; 
-                            this.isFollowed = true;
+                            this.unfollowBtn = false; 
+                            this.followBtn = true;
                             break;
                         }
                     }
@@ -340,7 +354,56 @@ export default {
                 console.log(`An error ocurred`);
                 console.log(err);
             })
-            console.log("On screen "+onScreenUser);
+        },
+        noteBooksVisibility(loggedUser, onScreenUser){
+            axios.get(`http://localhost:2046/api/follow/followers/${onScreenUser}`, {
+                headers: {
+                    Authorization: this.currentToken
+                }
+            })
+            .then((res)=>{
+                if(res.status == 200){
+                    // If para que solo se ejcute en perfiles diferentes al de usuarios loggeados
+                    if(loggedUser != onScreenUser){
+
+                        // For para verificar si somos seguidores
+                        let followersList = res.data.followed_by;
+                        for(let i = 0; i<followersList.length; i++){
+                            if(loggedUser === followersList[i]){
+                                console.log("I am a follower");
+                                this.isFriend = true;
+                                console.log(this.userNotebooks);
+                            }
+                        }
+                        // For para eliminar los notebooks privados
+                        let notebook = {};
+                        for(let i = 0; i< this.userNotebooks.length; i++){
+                            notebook = this.userNotebooks[i];
+                            console.log(notebook);
+                            if(notebook.visibility == 1){
+                                this.userNotebooks.splice(i, 1)
+                            }
+                        }
+                        console.log(this.isFriend);
+                        // For para verificar si se es seguidor o no
+                        notebook = {};
+                        if(!this.isFriend){
+                            for(let i = 0; i< this.userNotebooks.length; i++){
+                                notebook = this.userNotebooks[i];
+                                console.log(notebook);
+                                if(notebook.visibility == 2){
+                                    this.userNotebooks.splice(i, 1)
+                                }
+                            }
+                        }
+                    }
+                    
+                }
+            })
+            .catch((err)=>{
+                console.log(`An error ocurred`);
+                console.log(err);
+            })
         },
         async followUser(){
             let userToFollow = {"followed": this.paramsUserId}
@@ -353,8 +416,8 @@ export default {
             .then((res)=>{
                 console.log(res);
                 this.userFollowsCountInfo(this.paramsUserId)
-                this.isUnfollowed = false;
-                this.isFollowed = true;
+                this.unfollowBtn = false;
+                this.followBtn = true;
             })
             .catch((err)=>{
                 console.log(err);
@@ -369,32 +432,40 @@ export default {
             .then((res)=>{
                 console.log(res);
                 this.userFollowsCountInfo(this.paramsUserId)
-                this.isUnfollowed = true;
-                this.isFollowed = false;
+                this.unfollowBtn = true;
+                this.followBtn = false;
+                this.isFriend = false
             })
             .catch((err)=>{
                 console.log("An error ocurred");
                 console.log(err);
             })
+        },
+        // Follow and unfollow buttons on user profile
+        dialogFollowButtons(user){
+            if(user.id == this.currentId){
+                showDialogFollow = false;
+            }else{
+                showDialogFollow = true;
+            }
         }
     },
     created(){
-        this.getUser(this.paramsUserId)
-        this.getUserNotebooks(this.paramsUserId)
-        this.userFollowsCountInfo(this.paramsUserId)
-        this.userVerification(this.paramsUserId)
-        this.followVerification(this.currentId, this.paramsUserId)
+        this.getUser(this.paramsUserId);
+        this.getUserNotebooks(this.paramsUserId);
+        this.userFollowsCountInfo(this.paramsUserId);
+        this.userVerification(this.paramsUserId);
+        this.followVerification(this.currentId, this.paramsUserId);
+        this.noteBooksVisibility(this.currentId, this.paramsUserId);
     },
     beforeUpdate(){
         this.paramsUserId = this.$route.params.id;
-        this.getUser(this.paramsUserId)
-        this.getUserNotebooks(this.paramsUserId)
-        this.userFollowsCountInfo(this.paramsUserId)
-        this.userVerification(this.paramsUserId)
-        this.followVerification(this.currentId, this.paramsUserId)
-    },
-    updated(){
-       
+        this.getUser(this.paramsUserId);
+        this.getUserNotebooks(this.paramsUserId);
+        this.userFollowsCountInfo(this.paramsUserId);
+        this.userVerification(this.paramsUserId);
+        this.followVerification(this.currentId, this.paramsUserId);
+        this.noteBooksVisibility(this.currentId, this.paramsUserId);
     }
 }
 </script>
