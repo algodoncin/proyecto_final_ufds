@@ -31,12 +31,12 @@
                                                     Notebooks
                                                 </v-col>
                                                 <v-col align="center" >
-                                                    <span class="pointer">{{followCounter.followed}}</span>
+                                                    <span class="pointer" @click="followedBy()">{{followCounter.followed}}</span>
                                                     <br>
                                                     Followers
                                                 </v-col>
                                                 <v-col align="center" >
-                                                    <span class="pointer">{{followCounter.following}}</span>
+                                                    <span class="pointer" @click="following()">{{followCounter.following}}</span>
                                                     <br>
                                                     Following
                                                 </v-col>
@@ -54,13 +54,26 @@
                                 <v-row v-if="showFollowButton">
                                     <v-col cols align="center" >
                                         <v-btn
-                                            class="mb-8"
-                                            color="blue"
+                                            color="green"
                                             size="large"
                                             variant="tonal"
+                                            v-if="isUnfollowed"
                                             @click="followUser()"
                                         >
                                             Follow
+                                        </v-btn>
+                                    </v-col>
+                                </v-row>
+                                <v-row v-if="showFollowButton">
+                                    <v-col cols align="center" >
+                                        <v-btn
+                                            color="red"
+                                            size="large"
+                                            variant="tonal"
+                                            v-if="isFollowed"
+                                            @click="unfollowUser()"
+                                        >
+                                            Unfollow
                                         </v-btn>
                                     </v-col>
                                 </v-row>
@@ -70,6 +83,9 @@
                         <v-container>
                             <h3>Notebooks this user owns:</h3>
                             <v-row class="mt-3">
+                                <v-col align="center" class="fill-height my-auto" v-if="ifNotebooks">
+                                    <h2>No notebooks were found</h2>
+                                </v-col>
                                 <v-col cols="3" v-for="(notebook, i) in userNotebooks" :key="i">
                                     <v-card >
                                         <v-card-title>{{notebook.title}}</v-card-title>
@@ -84,10 +100,63 @@
                                 </v-col>
                             </v-row>
                         </v-container>
-                        
                     </div>  
                 </v-card>
-                
+                <!-- Follows Dialogs -->
+                    <v-dialog
+                    v-model="followingDialog"
+                    transition="dialog-top-transition"
+                    max-width="500"
+                    max-height="400px">
+                        <v-card :title="dialogTitle" :subtitle="dialogSubtitle">
+                            <v-card-text >
+                                <v-row v-for="(follow, i) in follows" :key="i">
+                                    <v-col cols="4" align="center">
+                                        <img :src="`http://localhost:2046/api/user/avatar/${follow.followed.image}`" alt="" :width="50" rounded="10">
+                                    </v-col>
+                                    <v-col cols="4" align="center" class="fill-height my-auto">
+                                        <span class="pointer" @click="followRedirection(follow.followed._id)">{{follow.followed.username}}</span>
+                                    </v-col>
+                                    <v-col cols="4" align="center" class="fill-height my-auto">
+                                        <v-btn
+                                            color="blue"
+                                            size="large"
+                                            variant="tonal"
+                                        >
+                                            Follow
+                                        </v-btn>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                        </v-card>
+                    </v-dialog>
+                    <v-dialog
+                    v-model="followersDialog"
+                    transition="dialog-top-transition"
+                    max-width="500"
+                    max-height="400px">
+                        <v-card :title="dialogTitle" :subtitle="dialogSubtitle">
+                            <v-card-text >
+                                <v-row v-for="(follow, i) in follows" :key="i">
+                                    <v-col cols="4" align="center">
+                                        <img :src="`http://localhost:2046/api/user/avatar/${follow.user.image}`" alt="" :width="50" rounded="10">
+                                    </v-col>
+                                    <v-col cols="4" align="center" class="fill-height my-auto">
+                                        <span class="pointer" @click="followRedirection(follow.user._id)">{{follow.user.username}}</span>
+                                    </v-col>
+                                    <v-col cols="4" align="center" class="fill-height my-auto">
+                                        <v-btn
+                                            color="blue"
+                                            size="large"
+                                            variant="tonal"
+                                        >
+                                            Follow
+                                        </v-btn>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                        </v-card>
+                    </v-dialog>
             </v-container>
         </v-main>
     </v-app>
@@ -112,8 +181,18 @@ export default {
                 following: 0,
                 notebooks: 0
             },
+            ifNotebooks: false,
+            // Follows variables
+            dialogTitle: '',
+            dialogSubtitle: '',
+            follows: [],
+            followsAvatar: '',
             // Diaglos
-            showFollowButton: true
+            showFollowButton: true,
+            followingDialog: false,
+            followersDialog: false,
+            isFollowed: false,
+            isUnfollowed: false
         }
     },
     methods: {
@@ -127,7 +206,6 @@ export default {
                 const url = 'http://localhost:2046/api/user/avatar/';
                 this.user = respuesta.data.user;
                 this.avatar = `${url}${this.user.image}`
-                console.log(respuesta);
             })
             .catch((err)=>{
                 console.log(`Ocurrio un error ${err}`);
@@ -140,12 +218,16 @@ export default {
                 }
             })
             .then((respuesta)=>{
-                console.log(respuesta);
+                this.ifNotebooks = false;
                 const notebooks = respuesta.data.notebooks;
                 this.userNotebooks = notebooks;
             })
             .catch((err)=>{
                 console.log(`Ocurrio un error ${err}`);
+                if(err.response.status == 404){
+                    this.userNotebooks = [];
+                    this.ifNotebooks = true;
+                }
             })
         },
         readNotebookViewRedirection(notebookId){
@@ -158,7 +240,6 @@ export default {
                 }
             })
             .then((respuesta)=>{
-                console.log(respuesta);
                 this.followCounter = {
                     followed: respuesta.data.followed,
                     following: respuesta.data.following,
@@ -169,11 +250,54 @@ export default {
                 console.log(`Ocurrio un error ${err}`);
             })
         },
-        userFollows(){
-
+        following(){
+            // Define dialog title and subtitle
+            this.dialogTitle = "Following";
+            this.dialogSubtitle = "Users followed by username"
+            let parameterUser = this.$route.params.id;
+            // Get data
+            axios.get(`http://localhost:2046/api/follow/following/${parameterUser}`, {
+                headers: {
+                    Authorization: this.currentToken
+                }
+            })
+            .then((response)=>{
+                // Fill local variable with users list
+                this.follows = response.data.response;
+                console.log(this.follows);
+                // Open dialog
+                this.followingDialog = true;
+            })
+            .catch((err)=>{
+                console.log(`Ocurrio un error ${err}`);
+            })
+            
         },
-        userFollowing(){
+        followedBy(){
+            this.dialogTitle = "Followed by";
+            this.dialogSubtitle = "Users who follows username"
+            let parameterUser = this.$route.params.id;
+            // Get data
+            axios.get(`http://localhost:2046/api/follow/followers/${parameterUser}`, {
+                headers: {
+                    Authorization: this.currentToken
+                }
+            })
+            .then((response)=>{
+                // Fill local variable with users list
+                this.follows = response.data.response;
 
+                // Open dialog
+                this.followersDialog = true;
+            })
+            .catch((err)=>{
+                console.log(`Ocurrio un error ${err}`);
+            })
+        },
+        getFollowAvatar(follow){
+            const avatar = `http://localhost:2046/api/user/avatar/${follow.followed.image}`;
+
+            return avatar
         },
         userVerification(id){
             if(id != this.currentId){
@@ -181,6 +305,77 @@ export default {
             }else{
                 this.showFollowButton = false
             }
+        },
+        followRedirection(userId){
+            this.paramsUserId = userId;
+            
+            this.$router.push(`/dashboard/user/${userId}`)
+
+            this.followingDialog = false;
+            this.followersDialog = false;
+        },
+        followVerification(loggedUser, onScreenUser){
+            console.log("logged: "+loggedUser);
+            axios.get(`http://localhost:2046/api/follow/followers/${onScreenUser}`, {
+                headers: {
+                    Authorization: this.currentToken
+                }
+            })
+            .then((res)=>{
+                if(res.status == 200){
+                    this.isFollowed = false;
+                    this.isUnfollowed = true;
+                    let followersList = res.data.followed_by;
+                    for(let i = 0; i<followersList.length; i++){
+                        if(loggedUser === followersList[i]){
+                            console.log("yes");
+                            this.isUnfollowed = false; 
+                            this.isFollowed = true;
+                            break;
+                        }
+                    }
+                }
+            })
+            .catch((err)=>{
+                console.log(`An error ocurred`);
+                console.log(err);
+            })
+            console.log("On screen "+onScreenUser);
+        },
+        async followUser(){
+            let userToFollow = {"followed": this.paramsUserId}
+
+            await axios.post(`http://localhost:2046/api/follow/save`, userToFollow, {
+                headers: {
+                    Authorization: this.currentToken
+                }
+            })
+            .then((res)=>{
+                console.log(res);
+                this.userFollowsCountInfo(this.paramsUserId)
+                this.isUnfollowed = false;
+                this.isFollowed = true;
+            })
+            .catch((err)=>{
+                console.log(err);
+            })
+        },
+        unfollowUser(){
+            axios.delete(`http://localhost:2046/api/follow/unfollow/${this.paramsUserId}`, {
+                headers: {
+                    Authorization: this.currentToken
+                }
+            })
+            .then((res)=>{
+                console.log(res);
+                this.userFollowsCountInfo(this.paramsUserId)
+                this.isUnfollowed = true;
+                this.isFollowed = false;
+            })
+            .catch((err)=>{
+                console.log("An error ocurred");
+                console.log(err);
+            })
         }
     },
     created(){
@@ -188,6 +383,18 @@ export default {
         this.getUserNotebooks(this.paramsUserId)
         this.userFollowsCountInfo(this.paramsUserId)
         this.userVerification(this.paramsUserId)
+        this.followVerification(this.currentId, this.paramsUserId)
+    },
+    beforeUpdate(){
+        this.paramsUserId = this.$route.params.id;
+        this.getUser(this.paramsUserId)
+        this.getUserNotebooks(this.paramsUserId)
+        this.userFollowsCountInfo(this.paramsUserId)
+        this.userVerification(this.paramsUserId)
+        this.followVerification(this.currentId, this.paramsUserId)
+    },
+    updated(){
+       
     }
 }
 </script>

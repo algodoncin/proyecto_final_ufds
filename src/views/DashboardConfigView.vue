@@ -20,6 +20,7 @@
                             density="compact"
                             variant="outlined"
                             v-model="currentUser.email"
+                            type="email"
                         ></v-text-field>
                     </v-col>
                 </v-row>
@@ -66,6 +67,26 @@
                         ></v-alert>
                     </v-col>
                 </v-row>
+                <v-row v-if="invalidUsername">
+                    <v-col cols="3" class="mx-auto">
+                        <v-alert
+                            type="error"
+                            title="Invalid Fields"
+                            text="Username field must contain at least 3 characters"
+                            
+                        ></v-alert>
+                    </v-col>
+                </v-row>
+                <v-row v-if="invalidEmail">
+                    <v-col cols="3" class="mx-auto">
+                        <v-alert
+                            type="error"
+                            title="Invalid Fields"
+                            text="Enter a valid email"
+                            
+                        ></v-alert>
+                    </v-col>
+                </v-row>
             </v-container>
         </v-main>
     </v-app>
@@ -85,7 +106,9 @@ export default {
                 password: ''
             },
             updateConfirmation: false,
-            updateError: false
+            updateError: false,
+            invalidUsername: false,
+            invalidEmail: false
         }
     },
     methods: {
@@ -107,75 +130,89 @@ export default {
         updateUser(){
             let userToUpdate = this.currentUser;
             // console.log(userToUpdate);
-
-            if(userToUpdate.password){
-                axios.put(`http://localhost:2046/api/user/update/`, userToUpdate, {
-                    headers: {
-                        Authorization: this.currentToken
-                    }
-                })
-                .then((respuesta)=>{
-                    let res = respuesta;
-                    if(res.data.code == 200){
-                        this.updateError = false;
-                        this.currentUser.password = '';
-                        this.updateConfirmation = true;
-                        setTimeout(()=>{
-                            this.updateConfirmation = false;
-                        }, 3000);
-                    }
-                })
-                .catch((err)=>{
-                    if(err.response.status == 406){
-                        this.updateError = true;
-                    }
-                    console.log(`An error ocurred ${err}`);
-                    this.updateConfirmation = false;
-                })
-            }else{
-                console.log("no");
-                delete userToUpdate.password;
-                axios.put(`http://localhost:2046/api/user/update/`, userToUpdate, {
-                    headers: {
-                        Authorization: this.currentToken
-                    }
-                })
-                .then((respuesta)=>{
-                    // Close error dialog
-                    this.updateError = false;
-
-                    // Define fields
-                    let res = respuesta;
-                    if(res.data.code == 200){
-
-                        // Define updated user in local storage and vuex storage
-                        let data = {
-                            user: {
-                                id: res.data.updatedUser._id,
-                                email: res.data.updatedUser.email,
-                                username: res.data.updatedUser.username
-                            },
-                            token: this.currentToken
-                        }
-                        this.$store.dispatch('loginAction', data)
-                        console.log(data);
-
-                        // Adjust profile fields
-                        this.currentUser.password = '';
-                        this.updateConfirmation = true;
-                        setTimeout(()=>{
-                            this.updateConfirmation = false;
-                        }, 3000);
-                    }
-                })
-                .catch((err)=>{
-                    if(err.response.status == 406){
-                        this.updateError = true;
-                    }
-                    console.log(`An error ocurred ${err}`);
-                    this.updateConfirmation = false;
-                })
+            let usernameToUpdate = this.currentUser.username;
+            if(usernameToUpdate.length < 3){
+                this.invalidUsername = true;
             }
+            else if(!this.validateEmail(userToUpdate.email)){
+                this.invalidEmail = true;
+            }
+            else{
+                this.invalidEmail = false;
+                this.invalidUsername = false;
+                if(userToUpdate.password){
+                    axios.put(`http://localhost:2046/api/user/update/`, userToUpdate, {
+                        headers: {
+                            Authorization: this.currentToken
+                        }
+                    })
+                    .then((respuesta)=>{
+                        let res = respuesta;
+                        if(res.data.code == 200){
+                            this.updateError = false;
+                            this.currentUser.password = '';
+                            this.updateConfirmation = true;
+                            setTimeout(()=>{
+                                this.updateConfirmation = false;
+                            }, 3000);
+                        }
+                    })
+                    .catch((err)=>{
+                        if(err.response.status == 406){
+                            this.updateError = true;
+                        }
+                        console.log(`An error ocurred ${err}`);
+                        this.updateConfirmation = false;
+                    })
+                }else{
+                    console.log("no");
+                    delete userToUpdate.password;
+                    axios.put(`http://localhost:2046/api/user/update/`, userToUpdate, {
+                        headers: {
+                            Authorization: this.currentToken
+                        }
+                    })
+                    .then((respuesta)=>{
+                        // Close error dialog
+                        this.updateError = false;
+
+                        // Define fields
+                        let res = respuesta;
+                        if(res.data.code == 200){
+
+                            // Define updated user in local storage and vuex storage
+                            let data = {
+                                user: {
+                                    id: res.data.updatedUser._id,
+                                    email: res.data.updatedUser.email,
+                                    username: res.data.updatedUser.username
+                                },
+                                token: this.currentToken
+                            }
+                            this.$store.dispatch('loginAction', data)
+                            console.log(data);
+
+                            // Adjust profile fields
+                            this.currentUser.password = '';
+                            this.updateConfirmation = true;
+                            setTimeout(()=>{
+                                this.updateConfirmation = false;
+                            }, 3000);
+                        }
+                    })
+                    .catch((err)=>{
+                        if(err.response.status == 406){
+                            this.updateError = true;
+                        }
+                        console.log(`An error ocurred ${err}`);
+                        this.updateConfirmation = false;
+                    })
+                }
+            }
+        },
+        validateEmail(email){
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
         }
     },
     created(){
