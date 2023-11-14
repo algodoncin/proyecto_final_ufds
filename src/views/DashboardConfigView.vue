@@ -3,39 +3,71 @@
         <v-main>
             <!-- Content --> 
             <v-container class="mx-auto">
-                <v-row>
-                    <v-col cols="4" class="mx-auto">
-                        <h3>Username</h3>
-                        <v-text-field
-                            density="compact"
-                            variant="outlined"
-                            v-model="currentUser.username"
-                        ></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col cols="4" class="mx-auto">
-                        <h3>Email</h3>
-                        <v-text-field
-                            density="compact"
-                            variant="outlined"
-                            v-model="currentUser.email"
-                            type="email"
-                        ></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col cols="4" class="mx-auto">
-                        <h3>New Password</h3>
-                        <v-text-field
-                            density="compact"
-                            variant="outlined"
-                            v-model="currentUser.password"
-                            type="password"
-                        ></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
+                <v-card
+                class="mt-5 mx-5"
+                min-height="500px"
+                color="#385F73">
+                <div class="mt-5">
+                    <v-row>
+                        <v-col cols="4" align="center">
+                            
+                            <button>
+                                <v-avatar
+                                class="ma-5"
+                                size="300"
+                                rounded="10"
+                                >
+                                    <v-img :src="avatar" class="bg-white"></v-img>
+                                </v-avatar>
+                            </button>
+                            <!-- <v-form> -->
+                                <!-- <input type="file" @change="getImg"> -->
+                                <v-file-input
+                                label="File input"
+                                variant="filled"
+                                prepend-icon="mdi-camera"
+                                v-model="img"
+                                @change="getImg"
+                                ></v-file-input>
+                            <!-- </v-form> -->
+                            
+                        </v-col>
+                        <v-col cols="8">
+                            <v-row>
+                                <v-col cols="8" class="mx-auto">
+                                    <h3>Username</h3>
+                                    <v-text-field
+                                        density="compact"
+                                        variant="outlined"
+                                        v-model="currentUser.username"
+                                    ></v-text-field>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                            <v-col cols="8" class="mx-auto">
+                                <h3>Email</h3>
+                                <v-text-field
+                                    density="compact"
+                                    variant="outlined"
+                                    v-model="currentUser.email"
+                                    type="email"
+                                ></v-text-field>
+                            </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col cols="8" class="mx-auto">
+                                    <h3>New Password</h3>
+                                    <v-text-field
+                                        density="compact"
+                                        variant="outlined"
+                                        v-model="currentUser.password"
+                                        type="password"
+                                    ></v-text-field>
+                                </v-col>
+                            </v-row>
+                        </v-col>
+                    </v-row>
+                    <v-row>
                     <v-col cols="3" class="mx-auto">
                         <v-btn
                         block
@@ -48,45 +80,49 @@
                             Update
                         </v-btn>
                     </v-col>
-                </v-row>
-                <v-row v-if="updateConfirmation">
-                    <v-col cols="3" class="mx-auto">
-                        <v-alert
-                            type="success"
-                            title="User Updated"
-                            text="User updated"
-                        ></v-alert>
-                    </v-col>
-                </v-row>
-                <v-row v-if="updateError">
-                    <v-col cols="3" class="mx-auto">
-                        <v-alert
-                            type="error"
-                            title="Existing user"
-                            text="There is already a user with those credentials"
-                        ></v-alert>
-                    </v-col>
-                </v-row>
-                <v-row v-if="invalidUsername">
-                    <v-col cols="3" class="mx-auto">
-                        <v-alert
-                            type="error"
-                            title="Invalid Fields"
-                            text="Username field must contain at least 3 characters"
-                            
-                        ></v-alert>
-                    </v-col>
-                </v-row>
-                <v-row v-if="invalidEmail">
-                    <v-col cols="3" class="mx-auto">
-                        <v-alert
-                            type="error"
-                            title="Invalid Fields"
-                            text="Enter a valid email"
-                            
-                        ></v-alert>
-                    </v-col>
-                </v-row>
+                    </v-row>
+                    <v-row v-if="updateConfirmation">
+                        <v-col cols="3" class="mx-auto">
+                            <v-alert
+                                type="success"
+                                title="User Updated"
+                                text="User updated"
+                            ></v-alert>
+                        </v-col>
+                    </v-row>
+                    <v-row v-if="updateError">
+                        <v-col cols="3" class="mx-auto">
+                            <v-alert
+                                type="error"
+                                title="Existing user"
+                                text="There is already a user with those credentials"
+                            ></v-alert>
+                        </v-col>
+                    </v-row>
+                    <v-row v-if="invalidUsername">
+                        <v-col cols="3" class="mx-auto">
+                            <v-alert
+                                type="error"
+                                title="Invalid Fields"
+                                text="Username field must contain at least 3 characters"
+                                
+                            ></v-alert>
+                        </v-col>
+                    </v-row>
+                    <v-row v-if="invalidEmail">
+                        <v-col cols="3" class="mx-auto">
+                            <v-alert
+                                type="error"
+                                title="Invalid Fields"
+                                text="Enter a valid email"
+                                
+                            ></v-alert>
+                        </v-col>
+                    </v-row>   
+                </div>
+                     
+                </v-card>
+                
             </v-container>
         </v-main>
     </v-app>
@@ -108,7 +144,9 @@ export default {
             updateConfirmation: false,
             updateError: false,
             invalidUsername: false,
-            invalidEmail: false
+            invalidEmail: false,
+            avatar: '',
+            img: ''
         }
     },
     methods: {
@@ -122,12 +160,16 @@ export default {
                 let res = respuesta;
                 this.currentUser.username = res.data.user.username;
                 this.currentUser.email = res.data.user.email;
+                console.log(respuesta);
+                const url = 'http://localhost:2046/api/user/avatar/';
+                this.user = res.data.user;
+                this.avatar = `${url}${this.user.image}`
             })
             .catch((err)=>{
                 console.log(`An error has ocurred ${err}`);
             })
         },
-        updateUser(){
+        async updateUser(){
             let userToUpdate = this.currentUser;
             // console.log(userToUpdate);
             let usernameToUpdate = this.currentUser.username;
@@ -152,6 +194,7 @@ export default {
                             this.updateError = false;
                             this.currentUser.password = '';
                             this.updateConfirmation = true;
+                            console.log(this.img);
                             setTimeout(()=>{
                                 this.updateConfirmation = false;
                             }, 3000);
@@ -164,6 +207,33 @@ export default {
                         console.log(`An error ocurred ${err}`);
                         this.updateConfirmation = false;
                     })
+                    
+                    const fileInput = this.img[0];
+
+                    if(fileInput){
+                        const formData = new FormData();
+                        formData.append('file0', fileInput)
+                        // // Upload image
+                        await axios.post(`http://localhost:2046/api/user/upload/`, formData,{
+                            headers: {
+                                Authorization: this.currentToken
+                            }
+                        })
+                        .then((respuesta)=>{
+                            console.log(respuesta);
+                            this.getUserData(this.currentId);
+                        })
+                        .catch((err)=>{
+                            if(err.response.status == 406){
+                                this.updateError = true;
+                            }
+                            console.log(`An error ocurred ${err}`);
+                            console.log(err);
+                        })
+                        console.log(formData);
+                        console.log(fileInput);
+                    }   
+                    
                 }else{
                     console.log("no");
                     delete userToUpdate.password;
@@ -191,7 +261,7 @@ export default {
                             }
                             this.$store.dispatch('loginAction', data)
                             console.log(data);
-
+                            console.log(this.img[0]);
                             // Adjust profile fields
                             this.currentUser.password = '';
                             this.updateConfirmation = true;
@@ -207,17 +277,49 @@ export default {
                         console.log(`An error ocurred ${err}`);
                         this.updateConfirmation = false;
                     })
+                    const fileInput = this.img[0];
+
+                    if(fileInput){
+                        const formData = new FormData();
+                        formData.append('file0', fileInput)
+                        // // Upload image
+                        await axios.post(`http://localhost:2046/api/user/upload/`, formData,{
+                            headers: {
+                                Authorization: this.currentToken
+                            }
+                        })
+                        .then((respuesta)=>{
+                            console.log(respuesta);
+                            this.getUserData(this.currentId);
+                        })
+                        .catch((err)=>{
+                            if(err.response.status == 406){
+                                this.updateError = true;
+                            }
+                            console.log(`An error ocurred ${err}`);
+                            console.log(err);
+                        })
+                        console.log(formData);
+                        console.log(fileInput);
+                    }  
                 }
             }
         },
         validateEmail(email){
             const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return regex.test(email);
+        },
+        getImg(){
+            // console.log(e.target.files[0]);
+            console.log(this.img[0]);
         }
     },
     created(){
         this.getUserData(this.currentId);
     },
+    beforeUpdate(){
+        this.getUserData(this.currentId);
+    }
 }
 </script>
 <style scoped>
