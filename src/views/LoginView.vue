@@ -5,7 +5,7 @@
                 <v-img
                 class="mx-auto my-6"
                 max-width="228"
-                src="https://cdn.vuetifyjs.com/docs/images/logos/vuetify-logo-v3-slim-text-light.svg"
+                src="../assets/nocompila.png"
                 ></v-img>
                 <v-card
                 class="mx-auto pa-12 pb-8"
@@ -21,16 +21,6 @@
                     variant="outlined"
                     v-model="user.email"
                 ></v-text-field>
-                <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
-                    Password
-                    <a
-                    class="text-caption text-decoration-none text-blue"
-                    href="#"
-                    rel="noopener noreferrer"
-                    target="_blank"
-                    >
-                    Forgot login password?</a>
-                </div>
                 <v-text-field
                     :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
                     :type="visible ? 'text' : 'password'"
@@ -110,9 +100,6 @@ export default {
                         token: resToken
                     }
                     this.$store.dispatch('loginAction', data)
-
-                    console.log(this.$store.state.user);
-                    console.log(this.$store.state.token);
 
                     this.credentialsErr = false;
                     this.$router.push('/dashboard')

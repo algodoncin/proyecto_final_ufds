@@ -117,12 +117,6 @@
                                     </v-col>
                                     <v-col cols="6" align="center" class="fill-height my-auto">
                                         <span class="pointer" @click="followRedirection(follow.followed._id)">@{{follow.followed.username}}</span>
-                                        <!-- <v-card-subtitle 
-                                            v-if="follow.followed.me_sigue && follow.followed._id != currentId"
-                                            >Doesn't follow you</v-card-subtitle>
-                                        <v-card-subtitle 
-                                            v-if="!follow.followed.me_sigue && follow.followed._id != currentId"
-                                            >Follows you</v-card-subtitle> -->
                                     </v-col>
                                 </v-row>
                             </v-card-text>
@@ -141,12 +135,6 @@
                                     </v-col>
                                     <v-col cols="6" align="center" class="fill-height my-auto">
                                         <span class="pointer" @click="followRedirection(follow.user._id)">@{{follow.user.username}}</span>
-                                        <!-- <v-card-subtitle 
-                                            v-if="!follow.user.me_sigue && follow.user._id != currentId"
-                                            >Doesn't follow you</v-card-subtitle>
-                                        <v-card-subtitle 
-                                            v-if="follow.user.me_sigue && follow.user._id != currentId"
-                                            >Follows you</v-card-subtitle> -->
                                     </v-col>
                                 </v-row>
                             </v-card-text>
@@ -167,6 +155,7 @@ export default {
             currentId: this.$store.state.user.id,
             currentToken: this.$store.state.token,
             paramsUserId: this.$route.params.id,
+            currentUserRole: this.$store.state.user.role,
             // Standard variables
             user: {},
             avatar: '',
@@ -263,22 +252,7 @@ export default {
                 // Fill local variable with users list
                 this.follows = response.data.response;
 
-                // let followId = '';
-                // for(let i = 0; i < this.follows.length; i++){
-                //     followId = this.follows[i].followed._id;
-                //     console.log(followId);
-                //     for(let j = 0; j < this.currentUserFollows.length; j++){
-                //         if(followId == this.currentUserFollows[j]){
-                //             console.log(followId+" es mi seguidor");
-                //             this.follows[i].followed.me_sigue = true;
-                //         }else{
-                //             "no me sigue"
-                //             this.follows[i].followed.me_sigue = false;
-                //         }
-                //         console.log(this.follows[i].followed);
-                //     }
-                // }
-                // Open dialog
+                
                 this.followingDialog = true;
             })
             .catch((err)=>{
@@ -300,21 +274,6 @@ export default {
                 // Fill local variable with users list
                 this.follows = response.data.response;
 
-                // let followId = '';
-                // for(let i = 0; i < this.follows.length; i++){
-                //     followId = this.follows[i].user._id;
-                //     console.log(followId);
-                //     for(let j = 0; j < this.currentUserFollows.length; j++){
-                //         if(followId == this.currentUserFollows[j]){
-                //             console.log(followId+" es mi seguidor");
-                //             this.follows[i].user.me_sigue = true;
-                //         }else{
-                //             "no me sigue"
-                //             this.follows[i].user.me_sigue = false;
-                //         }
-                //         console.log(this.follows[i].followed);
-                //     }
-                // }
                 // Open dialog
                 this.followersDialog = true;
             })
@@ -375,39 +334,39 @@ export default {
             })
             .then((res)=>{
                 if(res.status == 200){
-                    // If para que solo se ejcute en perfiles diferentes al de usuarios loggeados
-                    if(loggedUser != onScreenUser){
+                    // If para que solo se ejecute en usuarios no admin (el admin puede ver todo)
+                    if(this.currentUserRole != "role_admin"){
+                        // If para que solo se ejcute en perfiles diferentes al de usuarios loggeados
+                        if(loggedUser != onScreenUser){
 
-                        // For para verificar si somos seguidores
-                        let followersList = res.data.followed_by;
-                        for(let i = 0; i<followersList.length; i++){
-                            if(loggedUser === followersList[i]){
-                                console.log("I am a follower");
-                                this.isFriend = true;
+                            // For para verificar si somos seguidores
+                            let followersList = res.data.followed_by;
+                            for(let i = 0; i<followersList.length; i++){
+                                if(loggedUser === followersList[i]){
+                                    this.isFriend = true;
+                                }
                             }
-                        }
-                        // For para eliminar los notebooks privados
-                        let notebook = {};
-                        for(let i = 0; i< this.userNotebooks.length; i++){
-                            notebook = this.userNotebooks[i];
-                            console.log(notebook);
-                            if(notebook.visibility == 1){
-                                this.userNotebooks.splice(i, 1)
-                            }
-                        }
-                        console.log(this.isFriend);
-                        // For para verificar si se es seguidor o no
-                        notebook = {};
-                        if(!this.isFriend){
+                            // For para eliminar los notebooks privados
+                            let notebook = {};
                             for(let i = 0; i< this.userNotebooks.length; i++){
                                 notebook = this.userNotebooks[i];
-                                console.log(notebook);
-                                if(notebook.visibility == 2){
+                                if(notebook.visibility == 1){
                                     this.userNotebooks.splice(i, 1)
+                                }
+                            }
+                            // For para verificar si se es seguidor o no
+                            notebook = {};
+                            if(!this.isFriend){
+                                for(let i = 0; i< this.userNotebooks.length; i++){
+                                    notebook = this.userNotebooks[i];
+                                    if(notebook.visibility == 2){
+                                        this.userNotebooks.splice(i, 1)
+                                    }
                                 }
                             }
                         }
                     }
+                    
                     
                 }
             })
@@ -425,10 +384,12 @@ export default {
                 }
             })
             .then((res)=>{
-                console.log(res);
-                this.userFollowsCountInfo(this.paramsUserId)
-                this.unfollowBtn = false;
-                this.followBtn = true;
+                if(res.status == 200){
+                    this.userFollowsCountInfo(this.paramsUserId)
+                    this.unfollowBtn = false;
+                    this.followBtn = true;
+                }
+                
             })
             .catch((err)=>{
                 console.log(err);
@@ -441,11 +402,12 @@ export default {
                 }
             })
             .then((res)=>{
-                console.log(res);
-                this.userFollowsCountInfo(this.paramsUserId)
-                this.unfollowBtn = true;
-                this.followBtn = false;
-                this.isFriend = false
+                if(res.status == 200){
+                    this.userFollowsCountInfo(this.paramsUserId)
+                    this.unfollowBtn = true;
+                    this.followBtn = false;
+                    this.isFriend = false
+                }
             })
             .catch((err)=>{
                 console.log("An error ocurred");

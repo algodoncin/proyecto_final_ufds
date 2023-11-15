@@ -5,8 +5,6 @@
             <v-text-field label="Search books" class="mt-5 ml-4" v-model="searchInput"></v-text-field>
             <v-spacer></v-spacer>
             <v-btn variant="text" icon="mdi-magnify" @click="searchNotebooks(searchInput)"></v-btn>
-            <!-- <v-btn variant="text" icon="mdi-filter"></v-btn>
-            <v-btn variant="text" icon="mdi-dots-vertical"></v-btn> -->
         </v-app-bar>
         <v-main>
             <v-container>
@@ -40,6 +38,8 @@ export default {
             // Global variables
             currentId: this.$store.state.user.id,
             currentToken: this.$store.state.token,
+            currentUserRole: this.$store.state.user.role,
+            currentUserFollow: [],
             // Standard variables
             searchInput: '',
             notebooks: [],
@@ -63,14 +63,67 @@ export default {
 
                     let res = respuesta.data;
                     this.notebooks = res.notebooks;
+                    
+                    // Get current user follow info
+                    this.getUserFollow();
+
+                    // If user is not admin use code below
+                    if(this.currentUserRole != "role_admin"){
+                        // Notebooks visibility
+                        for(let i = 0; i<this.notebooks.length; i++){
+                            let cicleUser = this.notebooks[i].user._id;
+                           
+                            if(cicleUser != this.currentId){  
+                                if(this.notebooks[i].visibility == 1){
+                                    this.notebooks.splice(i, 1)
+                                }
+
+                                if(this.notebooks[i].visibility == 2){
+                                    let cicleUserVerification = this.notebooks[i].user._id;
+                                    axios.get(`http://localhost:2046/api/follow/following/${cicleUserVerification}`, {
+                                        headers: {
+                                            Authorization: this.currentToken
+                                        }
+                                    })
+                                    .then((res)=>{
+                                        // console.log(cicleUserVerification, res.data.followed_by);
+                                        let followed_by = res.data.followed_by;
+                                        let isFriend = false;
+
+                                        if(followed_by.length == 0){
+                                            this.notebooks.splice(i, 1)
+                                        }
+
+                                        if(followed_by.length != 0){
+                                            for(let j = 0; j<followed_by.length; j++){
+                                                if(this.currentId == followed_by[j]){
+                                                    isFriend = true
+                                                }
+                                            }
+                                            if(!isFriend){
+                                                this.notebooks.splice(i, 1)
+                                            }
+                                        }   
+                                    })
+                                    .catch((err)=>{
+                                        console.log(`An error ocurred`);
+                                        console.log(err);
+                                    })
+                                
+                                }
+                            }
+                            
+                        }
+                    }
 
                     if(this.notebooks.length == 0){
-                        console.log('sexo');
+                        console.log('No notebooks were found');
                     }
                 }
             })
             .catch((err)=>{
-                if(err.response.status == 404){
+                console.log(err);
+                if(err.status == 404){
                     this.notebooks = [];
                     this.ifNotebooks = false;
                     this.ifNoNotebooks = true;
@@ -81,6 +134,20 @@ export default {
         },
         readNotebookViewRedirection(notebookId){
             this.$router.push(`/dashboard/read/${notebookId}`)
+        },
+        getUserFollow(){
+            axios.get(`http://localhost:2046/api/follow/following/${this.currentId}`, {
+                headers: {
+                    Authorization: this.currentToken
+                }
+            })
+            .then((res)=>{
+                this.currentUserFollow = res.data.following;
+            })
+            .catch((err)=>{
+                console.log(`An error ocurrer`);
+                console.log(err);
+            })
         }
     },
     created(){

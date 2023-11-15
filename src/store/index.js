@@ -5,7 +5,8 @@ export default createStore({
     user: {
       id: '',
       email: '',
-      username: ''
+      username: '',
+      role: ''
     },
     token: ''
   },

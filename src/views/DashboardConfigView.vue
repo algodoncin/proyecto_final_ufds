@@ -160,7 +160,6 @@ export default {
                 let res = respuesta;
                 this.currentUser.username = res.data.user.username;
                 this.currentUser.email = res.data.user.email;
-                console.log(respuesta);
                 const url = 'http://localhost:2046/api/user/avatar/';
                 this.user = res.data.user;
                 this.avatar = `${url}${this.user.image}`
