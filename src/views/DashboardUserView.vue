@@ -263,22 +263,7 @@ export default {
                 // Fill local variable with users list
                 this.follows = response.data.response;
 
-                // let followId = '';
-                // for(let i = 0; i < this.follows.length; i++){
-                //     followId = this.follows[i].followed._id;
-                //     console.log(followId);
-                //     for(let j = 0; j < this.currentUserFollows.length; j++){
-                //         if(followId == this.currentUserFollows[j]){
-                //             console.log(followId+" es mi seguidor");
-                //             this.follows[i].followed.me_sigue = true;
-                //         }else{
-                //             "no me sigue"
-                //             this.follows[i].followed.me_sigue = false;
-                //         }
-                //         console.log(this.follows[i].followed);
-                //     }
-                // }
-                // Open dialog
+                
                 this.followingDialog = true;
             })
             .catch((err)=>{
@@ -300,21 +285,6 @@ export default {
                 // Fill local variable with users list
                 this.follows = response.data.response;
 
-                // let followId = '';
-                // for(let i = 0; i < this.follows.length; i++){
-                //     followId = this.follows[i].user._id;
-                //     console.log(followId);
-                //     for(let j = 0; j < this.currentUserFollows.length; j++){
-                //         if(followId == this.currentUserFollows[j]){
-                //             console.log(followId+" es mi seguidor");
-                //             this.follows[i].user.me_sigue = true;
-                //         }else{
-                //             "no me sigue"
-                //             this.follows[i].user.me_sigue = false;
-                //         }
-                //         console.log(this.follows[i].followed);
-                //     }
-                // }
                 // Open dialog
                 this.followersDialog = true;
             })
@@ -382,7 +352,6 @@ export default {
                         let followersList = res.data.followed_by;
                         for(let i = 0; i<followersList.length; i++){
                             if(loggedUser === followersList[i]){
-                                console.log("I am a follower");
                                 this.isFriend = true;
                             }
                         }
@@ -390,18 +359,15 @@ export default {
                         let notebook = {};
                         for(let i = 0; i< this.userNotebooks.length; i++){
                             notebook = this.userNotebooks[i];
-                            console.log(notebook);
                             if(notebook.visibility == 1){
                                 this.userNotebooks.splice(i, 1)
                             }
                         }
-                        console.log(this.isFriend);
                         // For para verificar si se es seguidor o no
                         notebook = {};
                         if(!this.isFriend){
                             for(let i = 0; i< this.userNotebooks.length; i++){
                                 notebook = this.userNotebooks[i];
-                                console.log(notebook);
                                 if(notebook.visibility == 2){
                                     this.userNotebooks.splice(i, 1)
                                 }

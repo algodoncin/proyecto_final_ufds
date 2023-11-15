@@ -81,7 +81,8 @@ export default {
         },
         readNotebookViewRedirection(notebookId){
             this.$router.push(`/dashboard/read/${notebookId}`)
-        }
+        },
+        
     },
     created(){
 

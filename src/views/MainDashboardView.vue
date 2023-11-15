@@ -48,7 +48,6 @@ export default {
             }
         },
         redirectProfile(id){
-            console.log(id);
             this.$router.push(`/dashboard/user/${id}`)
         }
     },
