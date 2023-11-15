@@ -2,7 +2,16 @@
     <v-app>
         <!-- Sidebar -->
         <v-navigation-drawer permanent color="blue-lighten-4" v-if="conf">
-            <v-list-item title="My Application" subtitle="Vuetify" :height="64">@{{ user.username }}</v-list-item>
+            <v-list-item align="center">
+                <v-avatar
+                    size="100"
+                    rounded="10"
+                    
+                >
+                    <v-img :src="avatar" class="bg-white"></v-img>
+                </v-avatar>
+            </v-list-item>
+            <v-list-item  align="center" >@{{ user.username }}</v-list-item>
             <v-divider></v-divider>
             <v-list-item link title="Home" to="/dashboard/home"></v-list-item>
             <v-list-item link title="Profile" @click="redirectProfile(user.id)"></v-list-item>
@@ -16,6 +25,8 @@
     </v-app>
 </template>
 <script>
+import axios from 'axios';
+
 export default {
     name: 'MainDashboardView',
     data(){
@@ -28,7 +39,7 @@ export default {
                 email: '',
                 username: ''
             },
-            
+            avatar: ''
         }
     },
     methods: {
@@ -49,13 +60,33 @@ export default {
         },
         redirectProfile(id){
             this.$router.push(`/dashboard/user/${id}`)
+        },
+        getUserImg(){
+            axios.get(`http://localhost:2046/api/user/profile/${this.currentId}`, {
+                headers: {
+                    Authorization: this.currentToken
+                }
+            })
+            .then((res)=>{
+                console.log(res);
+                if(res.status == 200){
+                    let fileName = res.data.user.image;
+                    let url = `http://localhost:2046/api/user/avatar/${fileName}`;
+                    this.avatar = url;
+                }
+            })
+            .catch((err)=>{
+                console.log(err);
+            })
         }
     },
     created(){
         this.validateAccess();
+        this.getUserImg();
     },
     beforeUpdate(){
         this.user = this.$store.state.user;
+        this.getUserImg();
     }
 }
 </script>

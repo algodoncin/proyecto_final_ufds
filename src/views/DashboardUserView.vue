@@ -384,10 +384,12 @@ export default {
                 }
             })
             .then((res)=>{
-                console.log(res);
-                this.userFollowsCountInfo(this.paramsUserId)
-                this.unfollowBtn = false;
-                this.followBtn = true;
+                if(res.status == 200){
+                    this.userFollowsCountInfo(this.paramsUserId)
+                    this.unfollowBtn = false;
+                    this.followBtn = true;
+                }
+                
             })
             .catch((err)=>{
                 console.log(err);
@@ -400,11 +402,12 @@ export default {
                 }
             })
             .then((res)=>{
-                console.log(res);
-                this.userFollowsCountInfo(this.paramsUserId)
-                this.unfollowBtn = true;
-                this.followBtn = false;
-                this.isFriend = false
+                if(res.status == 200){
+                    this.userFollowsCountInfo(this.paramsUserId)
+                    this.unfollowBtn = true;
+                    this.followBtn = false;
+                    this.isFriend = false
+                }
             })
             .catch((err)=>{
                 console.log("An error ocurred");

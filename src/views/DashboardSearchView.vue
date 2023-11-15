@@ -72,12 +72,6 @@ export default {
                         // Notebooks visibility
                         for(let i = 0; i<this.notebooks.length; i++){
                             let cicleUser = this.notebooks[i].user._id;
-
-                            if(cicleUser != this.currentId){
-                                console.log("it's not me");
-                            }
-                            console.log(cicleUser);
-                            console.log(this.notebooks[i].visibility);
                            
                             if(cicleUser != this.currentId){  
                                 if(this.notebooks[i].visibility == 1){
@@ -86,7 +80,6 @@ export default {
 
                                 if(this.notebooks[i].visibility == 2){
                                     let cicleUserVerification = this.notebooks[i].user._id;
-                                    console.log(cicleUserVerification);
                                     axios.get(`http://localhost:2046/api/follow/following/${cicleUserVerification}`, {
                                         headers: {
                                             Authorization: this.currentToken
