@@ -117,12 +117,6 @@
                                     </v-col>
                                     <v-col cols="6" align="center" class="fill-height my-auto">
                                         <span class="pointer" @click="followRedirection(follow.followed._id)">@{{follow.followed.username}}</span>
-                                        <!-- <v-card-subtitle 
-                                            v-if="follow.followed.me_sigue && follow.followed._id != currentId"
-                                            >Doesn't follow you</v-card-subtitle>
-                                        <v-card-subtitle 
-                                            v-if="!follow.followed.me_sigue && follow.followed._id != currentId"
-                                            >Follows you</v-card-subtitle> -->
                                     </v-col>
                                 </v-row>
                             </v-card-text>
@@ -141,12 +135,6 @@
                                     </v-col>
                                     <v-col cols="6" align="center" class="fill-height my-auto">
                                         <span class="pointer" @click="followRedirection(follow.user._id)">@{{follow.user.username}}</span>
-                                        <!-- <v-card-subtitle 
-                                            v-if="!follow.user.me_sigue && follow.user._id != currentId"
-                                            >Doesn't follow you</v-card-subtitle>
-                                        <v-card-subtitle 
-                                            v-if="follow.user.me_sigue && follow.user._id != currentId"
-                                            >Follows you</v-card-subtitle> -->
                                     </v-col>
                                 </v-row>
                             </v-card-text>

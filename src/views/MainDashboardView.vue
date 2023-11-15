@@ -2,7 +2,7 @@
     <v-app>
         <!-- Sidebar -->
         <v-navigation-drawer permanent color="blue-lighten-4" v-if="conf">
-            <v-list-item title="My Application" subtitle="Vuetify" :height="64">{{ user.username }}</v-list-item>
+            <v-list-item title="My Application" subtitle="Vuetify" :height="64">@{{ user.username }}</v-list-item>
             <v-divider></v-divider>
             <v-list-item link title="Home" to="/dashboard/home"></v-list-item>
             <v-list-item link title="Profile" @click="redirectProfile(user.id)"></v-list-item>
