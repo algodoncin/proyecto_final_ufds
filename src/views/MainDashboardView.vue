@@ -12,6 +12,7 @@
                 </v-avatar>
             </v-list-item>
             <v-list-item  align="center" >@{{ user.username }}</v-list-item>
+            <hr>
             <v-divider></v-divider>
             <v-list-item link title="Home" to="/dashboard/home"></v-list-item>
             <v-list-item link title="Profile" @click="redirectProfile(user.id)"></v-list-item>

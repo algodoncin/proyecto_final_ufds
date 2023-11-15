@@ -90,7 +90,7 @@
                                 <v-col cols="3" v-for="(notebook, i) in userNotebooks" :key="i">
                                     <v-card >
                                         <v-card-title>{{notebook.title}}</v-card-title>
-                                        <v-card-subtitle>Autor: {{notebook.user.username}}</v-card-subtitle>
+                                        <v-card-subtitle>Autor: @{{notebook.user.username}}</v-card-subtitle>
                                         <v-card-text>
                                             {{notebook.description}}
                                         </v-card-text>
