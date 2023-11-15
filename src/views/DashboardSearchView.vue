@@ -38,6 +38,8 @@ export default {
             // Global variables
             currentId: this.$store.state.user.id,
             currentToken: this.$store.state.token,
+            currentUserRole: this.$store.state.user.role,
+            currentUserFollow: [],
             // Standard variables
             searchInput: '',
             notebooks: [],
@@ -62,52 +64,61 @@ export default {
                     let res = respuesta.data;
                     this.notebooks = res.notebooks;
                     
-                    // Notebooks visibility
-                    // console.log(this.notebooks);
+                    // Get current user follow info
+                    this.getUserFollow();
 
-                    for(let i = 0; i<this.notebooks.length; i++){
-                        let isFriend = false;
+                    // If user is not admin use code below
+                    if(this.currentUserRole != "role_admin"){
+                        // Notebooks visibility
+                        for(let i = 0; i<this.notebooks.length; i++){
+                            let cicleUser = this.notebooks[i].user._id;
 
-                        if(this.notebooks[i].user._id != this.currentId){
-
-                            console.log("es diferente");
-
-                            if(this.notebooks[i].visibility == 1){
-                                this.notebooks.splice(i, 1)
+                            if(cicleUser != this.currentId){
+                                console.log("it's not me");
                             }
-                            else if(this.notebooks[i].visibility == 2)
-                            {
-                                axios.get(`http://localhost:2046/api/follow/following/${this.notebooks[i].user._id}`, {
-                                headers: {
-                                    Authorization: this.currentToken
+                            console.log(cicleUser);
+                            console.log(this.notebooks[i].visibility);
+                           
+                            if(cicleUser != this.currentId){  
+                                if(this.notebooks[i].visibility == 1){
+                                    this.notebooks.splice(i, 1)
                                 }
-                                })
-                                .then((res)=>{
-                                    console.log(res);
-                                    console.log(isFriend);
 
-                                    let notebookOwnerFollowers = res.data.followed_by;
-                                    if(notebookOwnerFollowers.length != 0){
-                                        for(let j = 0; j < notebookOwnerFollowers.length; j++){
-                                            // Verify if logged user is friend with notebook owner
-                                            if(notebookOwnerFollowers[j] == this.currentId){
-                                                isFriend == true;
-                                            }
+                                if(this.notebooks[i].visibility == 2){
+                                    let cicleUserVerification = this.notebooks[i].user._id;
+                                    console.log(cicleUserVerification);
+                                    axios.get(`http://localhost:2046/api/follow/following/${cicleUserVerification}`, {
+                                        headers: {
+                                            Authorization: this.currentToken
                                         }
-                                        console.log(isFriend);
-                                        if(!isFriend){
+                                    })
+                                    .then((res)=>{
+                                        // console.log(cicleUserVerification, res.data.followed_by);
+                                        let followed_by = res.data.followed_by;
+                                        let isFriend = false;
+
+                                        if(followed_by.length == 0){
                                             this.notebooks.splice(i, 1)
                                         }
-                                    }else{
-                                        this.notebooks.splice(i, 1)
-                                    }
-                                })
-                                .catch((err)=>{
-                                    console.log(`An error ocurred`);
-                                    console.log(err);
-                                })
-                            }
 
+                                        if(followed_by.length != 0){
+                                            for(let j = 0; j<followed_by.length; j++){
+                                                if(this.currentId == followed_by[j]){
+                                                    isFriend = true
+                                                }
+                                            }
+                                            if(!isFriend){
+                                                this.notebooks.splice(i, 1)
+                                            }
+                                        }   
+                                    })
+                                    .catch((err)=>{
+                                        console.log(`An error ocurred`);
+                                        console.log(err);
+                                    })
+                                
+                                }
+                            }
                             
                         }
                     }
@@ -118,7 +129,8 @@ export default {
                 }
             })
             .catch((err)=>{
-                if(err.response.status == 404){
+                console.log(err);
+                if(err.status == 404){
                     this.notebooks = [];
                     this.ifNotebooks = false;
                     this.ifNoNotebooks = true;
@@ -130,40 +142,20 @@ export default {
         readNotebookViewRedirection(notebookId){
             this.$router.push(`/dashboard/read/${notebookId}`)
         },
-        // noteBooksVisibility(){
-        //     let currentId = this.currentId;
-
-        //     // Consults DB to make sure if I follow any of the notebooks owners
-        //     axios.get(`http://localhost:2046/api/follow/following/${currentId}`, {
-        //         headers: {
-        //             Authorization: this.currentToken
-        //         }
-        //     })
-        //     .then((res)=>{
-        //         if(res.status == 200){
-        //             // let currentUserFollows = res.data.following
-        //             let notebookOwner = '';
-        //             for(let i = 0; i < this.notebooks.length; i++){
-        //                 notebookOwner = this.notebooks[i].user._id
-        //                 if(currentId != notebookOwner){
-        //                     console.log(this.notebooks[i]);
-        //                     if(this.notebooks[i].visibility == 1){
-        //                         this.notebooks.splice(i, 1)
-        //                     }
-        //                     // else if(this.notebooks[i].visibility == 2){
-                                
-        //                     // }
-        //                 }
-        //             }
-        //         }
-        //     })
-        //     .catch((err)=>{
-        //         console.log(`An error ocurred`);
-        //         console.log(err);
-        //     })
-
-            
-        // }
+        getUserFollow(){
+            axios.get(`http://localhost:2046/api/follow/following/${this.currentId}`, {
+                headers: {
+                    Authorization: this.currentToken
+                }
+            })
+            .then((res)=>{
+                this.currentUserFollow = res.data.following;
+            })
+            .catch((err)=>{
+                console.log(`An error ocurrer`);
+                console.log(err);
+            })
+        }
     },
     created(){
 

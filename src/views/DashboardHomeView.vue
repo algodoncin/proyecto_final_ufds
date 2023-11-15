@@ -164,9 +164,6 @@ export default {
                 })
                 .then((respuesta)=>{
                     this.dialogFields = false;
-                    // console.log(userId);
-                    // console.log(notebookToSave);
-                    // console.log(respuesta);
                     let createdNotebook = respuesta.data.response;
                     this.$router.push(`/dashboard/edit/${createdNotebook._id}`)
                 })

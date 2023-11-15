@@ -155,6 +155,7 @@ export default {
             currentId: this.$store.state.user.id,
             currentToken: this.$store.state.token,
             paramsUserId: this.$route.params.id,
+            currentUserRole: this.$store.state.user.role,
             // Standard variables
             user: {},
             avatar: '',
@@ -333,35 +334,39 @@ export default {
             })
             .then((res)=>{
                 if(res.status == 200){
-                    // If para que solo se ejcute en perfiles diferentes al de usuarios loggeados
-                    if(loggedUser != onScreenUser){
+                    // If para que solo se ejecute en usuarios no admin (el admin puede ver todo)
+                    if(this.currentUserRole != "role_admin"){
+                        // If para que solo se ejcute en perfiles diferentes al de usuarios loggeados
+                        if(loggedUser != onScreenUser){
 
-                        // For para verificar si somos seguidores
-                        let followersList = res.data.followed_by;
-                        for(let i = 0; i<followersList.length; i++){
-                            if(loggedUser === followersList[i]){
-                                this.isFriend = true;
+                            // For para verificar si somos seguidores
+                            let followersList = res.data.followed_by;
+                            for(let i = 0; i<followersList.length; i++){
+                                if(loggedUser === followersList[i]){
+                                    this.isFriend = true;
+                                }
                             }
-                        }
-                        // For para eliminar los notebooks privados
-                        let notebook = {};
-                        for(let i = 0; i< this.userNotebooks.length; i++){
-                            notebook = this.userNotebooks[i];
-                            if(notebook.visibility == 1){
-                                this.userNotebooks.splice(i, 1)
-                            }
-                        }
-                        // For para verificar si se es seguidor o no
-                        notebook = {};
-                        if(!this.isFriend){
+                            // For para eliminar los notebooks privados
+                            let notebook = {};
                             for(let i = 0; i< this.userNotebooks.length; i++){
                                 notebook = this.userNotebooks[i];
-                                if(notebook.visibility == 2){
+                                if(notebook.visibility == 1){
                                     this.userNotebooks.splice(i, 1)
+                                }
+                            }
+                            // For para verificar si se es seguidor o no
+                            notebook = {};
+                            if(!this.isFriend){
+                                for(let i = 0; i< this.userNotebooks.length; i++){
+                                    notebook = this.userNotebooks[i];
+                                    if(notebook.visibility == 2){
+                                        this.userNotebooks.splice(i, 1)
+                                    }
                                 }
                             }
                         }
                     }
+                    
                     
                 }
             })
