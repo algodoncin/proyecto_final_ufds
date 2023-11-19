@@ -48,7 +48,7 @@
                 <v-btn
                     block
                     class="mb-8"
-                    color="blue"
+                    color="indigo lighten-1"
                     size="large"
                     variant="tonal"
                     @click="login()"

@@ -1,7 +1,7 @@
 <template>
     <v-app>
         <!-- Navbar -->
-        <v-app-bar color="blue-lighten-4" prominent>
+        <v-app-bar color="indigo lighten-1" prominent>
             <v-text-field label="Search books" class="mt-5 ml-4" v-model="searchInput"></v-text-field>
             <v-spacer></v-spacer>
             <v-btn variant="text" icon="mdi-magnify" @click="searchNotebooks(searchInput)"></v-btn>
