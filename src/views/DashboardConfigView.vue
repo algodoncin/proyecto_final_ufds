@@ -6,7 +6,7 @@
                 <v-card
                 class="mt-5 mx-5"
                 min-height="500px"
-                color="#385F73">
+                color="indigo lighten-1">
                 <div class="mt-5">
                     <v-row>
                         <v-col cols="4" align="center">
