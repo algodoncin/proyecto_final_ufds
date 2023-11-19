@@ -276,6 +276,7 @@ export default {
                 })
                 .catch((err)=>{
                     console.log(`Ocurrio un error ${err}`);
+                    console.log(err);
                 })
             }
             
@@ -310,7 +311,7 @@ export default {
             })
         }
     },
-    computed:{
+    computed: {
         parseToHTML(){
             return marked.parse(this.markdown)
         }

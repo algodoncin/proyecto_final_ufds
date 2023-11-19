@@ -1,7 +1,7 @@
 <template>
     <v-app>
         <v-container>
-            <form @submit="register">
+            <!-- <form @submit="register"> -->
                 <v-img
                 class="mx-auto my-6"
                 max-width="228"
@@ -115,7 +115,7 @@
                     </a>
                 </v-card-text>
                 </v-card>
-            </form>
+            <!-- </form> -->
         </v-container>
     </v-app>
 </template>
@@ -132,44 +132,63 @@ export default {
                 password: '',
             },
             passwordVerification: '',
+
+            registerConfirmation: false,
+
             passwordMatch: false,
+            existingCredentials: false,
+            missingData: false,
+            invalidFields: false,
+
+            // Eyes
             visible: false,
             visible1: false,
-            existingCredentials: false,
-            registerConfirmation: false,
-            missingData: false,
-            invalidFields: false
         }
     },
     methods: {
         register(){
+            this.invalidFields= false;
+            this.missingData = false;
+            this.existingCredentials = false;
+            this.passwordMatch = false;
+
             const password1 = this.registerUser.password;
             const password2 = this.passwordVerification;
             
             if(password1 == password2){
                 axios.post('http://localhost:2046/api/user/register', this.registerUser)
                 .then((res)=>{
-                    console.log(res.status);
-                    this.registerConfirmation = true;
-                    this.registerUser = {};
-                    this.passwordVerification = ''; 
-                    this.existingCredentials = false;
-                    this.missingData = false;
-                    this.invalidFields= false;
-                    setTimeout(()=>{
-                        this.registerConfirmation = false;
-                        this.$router.push('/login')
-                    }, 4000);
+                    if(res.status == 200){
+                        this.registerConfirmation = true;
+                        this.registerUser = {};
+                        this.passwordVerification = ''; 
+
+                        this.existingCredentials = false;
+                        this.missingData = false;
+                        this.invalidFields= false;
+                        this.passwordMatch = false;
+
+                        setTimeout(()=>{
+                            this.registerConfirmation = false;
+                            this.$router.push('/login')
+                        }, 3000);
+                    }
                 })
                 .catch((err)=>{
                     if(err.response.status == 409){
+
                         this.invalidFields= false;
                         this.missingData = false;
                         this.existingCredentials = true;
+
                     }else if(err.response.status == 412){
+
                         this.missingData = true;
+
                     }else if(err.response.status == 400){
+
                         this.invalidFields = true;
+                        
                     }
                 })
                 

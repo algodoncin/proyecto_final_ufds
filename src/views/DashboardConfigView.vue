@@ -6,7 +6,7 @@
                 <v-card
                 class="mt-5 mx-5"
                 min-height="500px"
-                color="#385F73">
+                color="indigo lighten-1">
                 <div class="mt-5">
                     <v-row>
                         <v-col cols="4" align="center">
@@ -72,12 +72,24 @@
                         <v-btn
                         block
                         class="mb-8"
-                        color="blue"
+                        color="success"
                         size="large"
                         variant="tonal"
                         @click="updateUser()"
                         >
                             Update
+                        </v-btn>
+                    </v-col>
+                    <v-col cols="3" class="mx-auto">
+                        <v-btn
+                        block
+                        class="mb-8"
+                        color="red"
+                        size="large"
+                        variant="tonal"
+                        @click="deleteDialog()"
+                        >
+                            Delete
                         </v-btn>
                     </v-col>
                     </v-row>
@@ -122,7 +134,48 @@
                 </div>
                      
                 </v-card>
-                
+                <v-dialog
+                v-model="deleteConfirmation"
+                transition="dialog-top-transition"
+                width="500"
+                persistent>
+                    <v-card height="250">
+                        <v-card-text>
+                            <v-card
+                                class="mb-12"
+                                color="surface-variant"
+                                variant="tonal"
+                            >
+                                <div>
+                                    <v-alert
+                                        type="error"
+                                        title="Are you sure to delete your user?"
+                                        text="Your user cannot be restored, would you like to proceed?"
+                                    ></v-alert>
+                                </div>
+                                
+                            </v-card>
+                            <v-row>
+                                <v-col>
+                                    <v-btn
+                                    prepend-icon="mdi-check"
+                                    color="green"
+                                    block
+                                    @click="deleteUser()"
+                                    >Proceed</v-btn>
+                                </v-col>
+                                <v-col>
+                                    <v-btn
+                                    prepend-icon="mdi-cancel"
+                                    color="red"
+                                    block
+                                    @click="cancelDialog()"
+                                    >Cancel</v-btn>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+                </v-dialog>
             </v-container>
         </v-main>
     </v-app>
@@ -146,7 +199,8 @@ export default {
             invalidUsername: false,
             invalidEmail: false,
             avatar: '',
-            img: ''
+            img: '',
+            deleteConfirmation: false
         }
     },
     methods: {
@@ -311,7 +365,29 @@ export default {
         getImg(){
             // console.log(e.target.files[0]);
             console.log(this.img[0]);
-        }
+        },
+        async deleteUser(){
+            await axios.delete(`http://localhost:2046/api/user/remove/`, {
+                headers: {
+                    Authorization: this.currentToken
+                }
+            })
+            .then((res)=>{
+                console.log(res);
+                this.$store.dispatch('logoutAction');
+                this.$router.push('/');
+            })
+            .catch((err)=>{
+                console.log(`An error has ocurred ${err}`);
+            })
+        },
+        deleteDialog(){
+            // Open dialog to verify if user is okay deleting the notebook
+            this.deleteConfirmation = true;
+        },
+        cancelDialog(){
+            this.deleteConfirmation = false;
+        },
     },
     created(){
         this.getUserData(this.currentId);

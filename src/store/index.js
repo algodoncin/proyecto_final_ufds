@@ -6,7 +6,8 @@ export default createStore({
       id: '',
       email: '',
       username: '',
-      role: ''
+      role: '',
+      image: ''
     },
     token: ''
   },

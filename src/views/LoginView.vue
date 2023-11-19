@@ -48,7 +48,7 @@
                 <v-btn
                     block
                     class="mb-8"
-                    color="blue"
+                    color="indigo lighten-1"
                     size="large"
                     variant="tonal"
                     @click="login()"
@@ -90,7 +90,7 @@ export default {
             // console.log(this.user);
             axios.post('http://localhost:2046/api/user/login', this.user)
             .then((res)=>{
-                // console.log(res);
+                console.log(res);
                 // console.log(res.status);
                 if(res.status == 200){
                     let resUser = res.data.user
