@@ -109,7 +109,7 @@
                         <v-card-text>
                             <v-row v-for="(follow, i) in follows" :key="i">
                                 <v-col cols="6" align="center">
-                                    <v-img :src="`http://localhost:2046/api/user/avatar/${follow.followed.image}`" alt=""
+                                    <v-img :src="`https://ufds-back.onrender.com/api/user/avatar/${follow.followed.image}`" alt=""
                                         width="50" rounded="10"></v-img>
                                 </v-col>
                                 <v-col cols="6" align="center" class="fill-height my-auto">
@@ -125,7 +125,7 @@
                         <v-card-text>
                             <v-row v-for="(follow, i) in follows" :key="i">
                                 <v-col cols="6" align="center">
-                                    <v-img :src="`http://localhost:2046/api/user/avatar/${follow.user.image}`" alt=""
+                                    <v-img :src="`https://ufds-back.onrender.com/api/user/avatar/${follow.user.image}`" alt=""
                                         width="50" rounded="10"></v-img>
                                 </v-col>
                                 <v-col cols="6" align="center" class="fill-height my-auto">
@@ -182,13 +182,13 @@ export default {
     },
     methods: {
         getUser(userId) {
-            axios.get(`http://localhost:2046/api/user/profile/${userId}`, {
+            axios.get(`https://ufds-back.onrender.com/api/user/profile/${userId}`, {
                 headers: {
                     Authorization: this.currentToken
                 }
             })
             .then((respuesta) => {
-                const url = 'http://localhost:2046/api/user/avatar/';
+                const url = 'https://ufds-back.onrender.com/api/user/avatar/';
                 this.user = respuesta.data.user;
                 this.avatar = `${url}${this.user.image}`
             })
@@ -197,7 +197,7 @@ export default {
             })
         },
         getUserNotebooks(userId) {
-            axios.get(`http://localhost:2046/api/notebook/user/${userId}`, {
+            axios.get(`https://ufds-back.onrender.com/api/notebook/user/${userId}`, {
                 headers: {
                     Authorization: this.currentToken
                 }
@@ -219,7 +219,7 @@ export default {
             this.$router.push(`/dashboard/read/${notebookId}`)
         },
         userFollowsCountInfo(userId) {
-            axios.get(`http://localhost:2046/api/user/counter/${userId}`, {
+            axios.get(`https://ufds-back.onrender.com/api/user/counter/${userId}`, {
                 headers: {
                     Authorization: this.currentToken
                 }
@@ -241,7 +241,7 @@ export default {
             this.dialogSubtitle = `Users followed by ${this.user.username}`
             let parameterUser = this.$route.params.id;
             // Get data
-            axios.get(`http://localhost:2046/api/follow/following/${parameterUser}`, {
+            axios.get(`https://ufds-back.onrender.com/api/follow/following/${parameterUser}`, {
                 headers: {
                     Authorization: this.currentToken
                 }
@@ -262,7 +262,7 @@ export default {
             this.dialogSubtitle = `Users who follows username ${this.user.username}`
             let parameterUser = this.$route.params.id;
             // Get data
-            axios.get(`http://localhost:2046/api/follow/followers/${parameterUser}`, {
+            axios.get(`https://ufds-back.onrender.com/api/follow/followers/${parameterUser}`, {
                 headers: {
                     Authorization: this.currentToken
                 }
@@ -279,7 +279,7 @@ export default {
                 })
         },
         getFollowAvatar(follow) {
-            const avatar = `http://localhost:2046/api/user/avatar/${follow.followed.image}`;
+            const avatar = `https://ufds-back.onrender.com/api/user/avatar/${follow.followed.image}`;
 
             return avatar
         },
@@ -299,7 +299,7 @@ export default {
             this.followersDialog = false;
         },
         followVerification(loggedUser, onScreenUser) {
-            axios.get(`http://localhost:2046/api/follow/followers/${onScreenUser}`, {
+            axios.get(`https://ufds-back.onrender.com/api/follow/followers/${onScreenUser}`, {
                 headers: {
                     Authorization: this.currentToken
                 }
@@ -325,7 +325,7 @@ export default {
             })
         },
         noteBooksVisibility(loggedUser, onScreenUser) {
-            axios.get(`http://localhost:2046/api/follow/followers/${onScreenUser}`, {
+            axios.get(`https://ufds-back.onrender.com/api/follow/followers/${onScreenUser}`, {
                 headers: {
                     Authorization: this.currentToken
                 }
@@ -377,7 +377,7 @@ export default {
         async followUser() {
             let userToFollow = { "followed": this.paramsUserId }
 
-            await axios.post(`http://localhost:2046/api/follow/save`, userToFollow, {
+            await axios.post(`https://ufds-back.onrender.com/api/follow/save`, userToFollow, {
                 headers: {
                     Authorization: this.currentToken
                 }
@@ -395,7 +395,7 @@ export default {
                 })
         },
         unfollowUser() {
-            axios.delete(`http://localhost:2046/api/follow/unfollow/${this.paramsUserId}`, {
+            axios.delete(`https://ufds-back.onrender.com/api/follow/unfollow/${this.paramsUserId}`, {
                 headers: {
                     Authorization: this.currentToken
                 }
@@ -422,7 +422,7 @@ export default {
             }
         },
         loggedUserFollows() {
-            axios.get(`http://localhost:2046/api/follow/followers/${this.currentId}`, {
+            axios.get(`https://ufds-back.onrender.com/api/follow/followers/${this.currentId}`, {
                 headers: {
                     Authorization: this.currentToken
                 }

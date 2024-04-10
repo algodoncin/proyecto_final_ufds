@@ -217,7 +217,7 @@ export default {
     },
     methods: {
         getCurrentNotebook(notebookId){
-            axios.get(`http://localhost:2046/api/notebook/one/${notebookId}`, {
+            axios.get(`https://ufds-back.onrender.com/api/notebook/one/${notebookId}`, {
                 headers: {
                     Authorization: this.currentToken
                 }
@@ -261,7 +261,7 @@ export default {
                 notebookToUpdate.content = notebook.content;
                 notebookToUpdate.visibility = notebook.visibility;
                 // Update notebook
-                axios.put(`http://localhost:2046/api/notebook/update/${notebookId}`, notebookToUpdate,{
+                axios.put(`https://ufds-back.onrender.com/api/notebook/update/${notebookId}`, notebookToUpdate,{
                     headers: {
                         Authorization: this.currentToken
                     }
@@ -290,7 +290,7 @@ export default {
         },
         deleteNotebook(notebookId){
             // Delete the notebook
-            axios.delete(`http://localhost:2046/api/notebook/remove/${notebookId}`, {
+            axios.delete(`https://ufds-back.onrender.com/api/notebook/remove/${notebookId}`, {
                 headers: {
                     Authorization: this.currentToken
                 }

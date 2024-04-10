@@ -51,7 +51,7 @@ export default {
     methods:{
         searchNotebooks(searchInput){
             const input = searchInput;
-            axios.get(`http://localhost:2046/api/notebook/search/${input}`, {
+            axios.get(`https://ufds-back.onrender.com/api/notebook/search/${input}`, {
                 headers: {
                     Authorization: this.currentToken
                 }
@@ -80,7 +80,7 @@ export default {
 
                                 if(this.notebooks[i].visibility == 2){
                                     let cicleUserVerification = this.notebooks[i].user._id;
-                                    axios.get(`http://localhost:2046/api/follow/following/${cicleUserVerification}`, {
+                                    axios.get(`https://ufds-back.onrender.com/api/follow/following/${cicleUserVerification}`, {
                                         headers: {
                                             Authorization: this.currentToken
                                         }
@@ -136,7 +136,7 @@ export default {
             this.$router.push(`/dashboard/read/${notebookId}`)
         },
         getUserFollow(){
-            axios.get(`http://localhost:2046/api/follow/following/${this.currentId}`, {
+            axios.get(`https://ufds-back.onrender.com/api/follow/following/${this.currentId}`, {
                 headers: {
                     Authorization: this.currentToken
                 }

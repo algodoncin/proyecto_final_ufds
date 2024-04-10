@@ -205,7 +205,7 @@ export default {
     },
     methods: {
         getUserData(id){
-            axios.get(`http://localhost:2046/api/user/profile/${id}`, {
+            axios.get(`https://ufds-back.onrender.com/api/user/profile/${id}`, {
                 headers: {
                     Authorization: this.currentToken
                 }
@@ -214,7 +214,7 @@ export default {
                 let res = respuesta;
                 this.currentUser.username = res.data.user.username;
                 this.currentUser.email = res.data.user.email;
-                const url = 'http://localhost:2046/api/user/avatar/';
+                const url = 'https://ufds-back.onrender.com/api/user/avatar/';
                 this.user = res.data.user;
                 this.avatar = `${url}${this.user.image}`
             })
@@ -236,7 +236,7 @@ export default {
                 this.invalidEmail = false;
                 this.invalidUsername = false;
                 if(userToUpdate.password){
-                    axios.put(`http://localhost:2046/api/user/update/`, userToUpdate, {
+                    axios.put(`https://ufds-back.onrender.com/api/user/update/`, userToUpdate, {
                         headers: {
                             Authorization: this.currentToken
                         }
@@ -267,7 +267,7 @@ export default {
                         const formData = new FormData();
                         formData.append('file0', fileInput)
                         // // Upload image
-                        await axios.post(`http://localhost:2046/api/user/upload/`, formData,{
+                        await axios.post(`https://ufds-back.onrender.com/api/user/upload/`, formData,{
                             headers: {
                                 Authorization: this.currentToken
                             }
@@ -290,7 +290,7 @@ export default {
                 }else{
                     console.log("no");
                     delete userToUpdate.password;
-                    axios.put(`http://localhost:2046/api/user/update/`, userToUpdate, {
+                    axios.put(`https://ufds-back.onrender.com/api/user/update/`, userToUpdate, {
                         headers: {
                             Authorization: this.currentToken
                         }
@@ -336,7 +336,7 @@ export default {
                         const formData = new FormData();
                         formData.append('file0', fileInput)
                         // // Upload image
-                        await axios.post(`http://localhost:2046/api/user/upload/`, formData,{
+                        await axios.post(`https://ufds-back.onrender.com/api/user/upload/`, formData,{
                             headers: {
                                 Authorization: this.currentToken
                             }
@@ -367,7 +367,7 @@ export default {
             console.log(this.img[0]);
         },
         async deleteUser(){
-            await axios.delete(`http://localhost:2046/api/user/remove/`, {
+            await axios.delete(`https://ufds-back.onrender.com/api/user/remove/`, {
                 headers: {
                     Authorization: this.currentToken
                 }

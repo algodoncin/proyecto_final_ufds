@@ -156,7 +156,7 @@ export default {
             const password2 = this.passwordVerification;
             
             if(password1 == password2){
-                axios.post('http://localhost:2046/api/user/register', this.registerUser)
+                axios.post('https://ufds-back.onrender.com/api/user/register', this.registerUser)
                 .then((res)=>{
                     if(res.status == 200){
                         this.registerConfirmation = true;

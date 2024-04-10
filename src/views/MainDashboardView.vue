@@ -95,7 +95,7 @@ export default {
             this.$router.push(`/dashboard/user/${id}`)
         },
         getUserImg(){
-            axios.get(`http://localhost:2046/api/user/profile/${this.currentId}`, {
+            axios.get(`https://ufds-back.onrender.com/api/user/profile/${this.currentId}`, {
                 headers: {
                     Authorization: this.currentToken
                 }
@@ -106,7 +106,7 @@ export default {
                     let fileName = res.data.user.image;
                     // let data = localStorage.getItem('userData')
                     // clg
-                    let url = `http://localhost:2046/api/user/avatar/${fileName}`;
+                    let url = `https://ufds-back.onrender.com/api/user/avatar/${fileName}`;
                     this.avatar = url;
                 }
             })

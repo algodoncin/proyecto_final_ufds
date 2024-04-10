@@ -124,7 +124,7 @@ export default {
     methods: {
         showUserBooks(userId){
             // console.log(userId);
-            axios.get(`http://localhost:2046/api/notebook/user/${userId}`, {
+            axios.get(`https://ufds-back.onrender.com/api/notebook/user/${userId}`, {
                 headers: {
                     Authorization: this.currentToken
                 }
@@ -157,7 +157,7 @@ export default {
                 this.dialogFields = true;
                 console.log(title.length);
             }else{
-                axios.post("http://localhost:2046/api/notebook/save", notebookToSave, {
+                axios.post("https://ufds-back.onrender.com/api/notebook/save", notebookToSave, {
                     headers: {
                         Authorization: this.currentToken
                     }

@@ -38,7 +38,7 @@ export default {
     },
     methods: {
         getCurrentNotebook(notebookId){
-            axios.get(`http://localhost:2046/api/notebook/one/${notebookId}`, {
+            axios.get(`https://ufds-back.onrender.com/api/notebook/one/${notebookId}`, {
                 headers: {
                     Authorization: this.currentToken
                 }
